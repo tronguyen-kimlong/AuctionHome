@@ -26,7 +26,9 @@ namespace AuctionHome.Data
         public virtual DbSet<HistoryBuy> HistoryBuys { get; set; }
         public virtual DbSet<HistorySearch> HistorySearches { get; set; }
         public virtual DbSet<Item> Items { get; set; }
+        public virtual DbSet<ListAuctioning> ListAuctionings { get; set; }
         public virtual DbSet<Manager> Managers { get; set; }
+        public virtual DbSet<MyAuctioning> MyAuctionings { get; set; }
         public virtual DbSet<Package> Packages { get; set; }
         public virtual DbSet<PaidItem> PaidItems { get; set; }
         public virtual DbSet<PaymentsAuction> PaymentsAuctions { get; set; }
@@ -161,12 +163,25 @@ namespace AuctionHome.Data
                     .HasConstraintName("FK__Items__id_user__2B3F6F97");
             });
 
+            modelBuilder.Entity<ListAuctioning>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+            });
+
             modelBuilder.Entity<Manager>(entity =>
             {
                 entity.HasKey(e => e.Username)
                     .HasName("PK__Manager__F3DBC573C0D26AF1");
 
                 entity.Property(e => e.Roles).HasDefaultValueSql("('mod')");
+            });
+
+            modelBuilder.Entity<MyAuctioning>(entity =>
+            {
+                entity.HasKey(e => e.IdItemAndUsername)
+                    .HasName("PK__MyAuctio__554F6D7A7A487305");
+
+                entity.Property(e => e.IsAuctioning).HasDefaultValueSql("((1))");
             });
 
             modelBuilder.Entity<Package>(entity =>
