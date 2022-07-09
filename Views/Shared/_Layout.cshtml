@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - AuctionHome</title>
+    <!-- system call there file-->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    
+    <!-- custom css and call this here-->
+    <link rel="stylesheet" href="~/css/topNavbar.css" />
+
+    <!--call CDN online part three-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" />
+    @*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">*@
+    @*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" />*@
+    @*<link rel="stylesheet" href="https://code.jquery.com/jquery-3.3.1.slim.min.js" />*@
+    @*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js" />*@
+    @*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.countdown/2.2.0/jquery.countdown.min.js" />*@
+    @*<link rel="stylesheet" href="" />*@
+    
+    
+
+</head>
+<body >
+    <header>
+        <!-- top navbar-->
+        <partial name="_TopNavbar" />
+    </header>
+    <div class="d-flex flex-column customize-container"  style="border:thick">
+       @* <main role="main" class="pb-3">
+            @RenderBody()
+        </main> *@
+       
+            @RenderBody()
+        
+
+    </div>
+
+    <footer>
+
+    </footer>
+    <!-- call modal in partial -->
+    <partial name="_Modal" />
+    <!-- calll javascrypt-->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <!-- call js count down-->
+    @*<script src="~/js/CountDown.js"></script>*@
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

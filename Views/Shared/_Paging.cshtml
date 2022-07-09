@@ -1,0 +1,59 @@
+﻿
+
+@if (ViewBag.PageIndex >= 1)
+    {
+
+        <div class="row col-sm-10">
+            <div class="col-sm-2">
+                Total Items: @ViewBag.PageTotal
+            </div>
+            @if (ViewBag.PageIndex > 1)
+            {
+                <a class="page-links btn btn-outline-primary" asp-controller="@ViewBag.Controller" asp-action="@ViewBag.Action" asp-route-PageIndex="1"> >> </a>
+
+            }
+            else
+            {
+                <span class="btn btn-outline-primary active">>></span>
+            }&nbsp; &nbsp;
+
+            @for (int i = 1; i <= ViewBag.PageTotal; i++)
+            {
+                @if (ViewBag.PageIndex != i)
+                {
+                    <a class="page-links btn btn-outline-primary" asp-controller="@ViewBag.Controller" asp-action="@ViewBag.Action" asp-route-PageIndex="@i">@i</a>
+
+                }
+                else
+                {
+                    <span class="btn btn-outline-primary active">@i</span>
+
+                }
+            }
+
+            @if (ViewBag.PageIndex < ViewBag.PageTotal)
+            {
+                <a class="page-links btn btn-outline-primary" asp-controller="@ViewBag.Controller" asp-action="@ViewBag.Action" asp-route-PageIndex="@(ViewBag.PageIndex+1)">></a>
+
+            }
+            else
+            {
+                <span class="btn btn-outline-primary active"> > </span>
+
+            }&nbsp; &nbsp;
+
+            @if (ViewBag.PageIndex < ViewBag.PageTotal)
+            {
+                <a class="page-links btn btn-outline-primary" asp-controller="@ViewBag.Controller" asp-action="@ViewBag.Action" asp-route-PageIndex="@ViewBag.PageTotal">>></a>
+
+            }
+            else
+            {
+                <span class="btn btn-outline-primary active">>></span>
+
+            }&nbsp; &nbsp;
+
+        </div>
+    }
+
+

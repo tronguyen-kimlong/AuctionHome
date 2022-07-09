@@ -1,0 +1,110 @@
+﻿@using AuctionHome.Library
+
+
+
+@model IEnumerable<AuctionHome.Models.Item>
+
+<div class=" d-flex align-content-center flex-wrap"  >
+    @foreach(var item in Model)
+    {
+        
+        long getDateTimeToSeconds = new TimeToSeconds().getDateTiemToSeconds(item);
+        
+
+        string dataUrl = null;
+        dataUrl = new HandleFormImage().getUrlImage(item.ImageItems);
+        string elementCount = "countdown" + item.Id;
+        
+        string timerFC = "timer" + item.Id + "()";
+       
+        string countdownTimer = "countdownTimer" + item.Id;
+        string seconds = "seconds" + item.Id;
+        int id = item.Id;
+        <script>
+            
+            var @seconds = @getDateTimeToSeconds
+            
+            function @timerFC {
+                var days = Math.floor(@seconds / 24 / 60 / 60);
+                var hoursLeft = Math.floor((@seconds) - (days * 86400));
+                var hours = Math.floor(hoursLeft / 3600);
+                var minutesLeft = Math.floor((hoursLeft) - (hours * 3600));
+                var minutes = Math.floor(minutesLeft / 60);
+                var remainingSeconds = @seconds % 60;
+                function pad(n) {
+                    return (n < 10 ? "0" + n : n);
+                }
+                document.getElementById("@elementCount").innerHTML = pad(days) + ":" + pad(hours) + ":" + pad(minutes) + ":" + pad(remainingSeconds);
+                if (@seconds <= 0) {
+                    clearInterval(@countdownTimer);
+                    document.getElementById("@elementCount").innerHTML = "Completed"; // completed to 0 timer
+                } else {
+                    @seconds--;
+                }
+            }
+            var @countdownTimer = setInterval('@timerFC', 1000);
+        </script>   
+
+        <div class="card" id="customize-sub-car"   > 
+            <img class="card-img-top" src="@dataUrl" alt="Card image cap" id="customize-image">
+           
+            <div class="card-body">
+              <span id="@elementCount" class="timer"></span>
+              
+              <h4>
+                  <a asp-action="Details" asp-route-id="@item.Id"   class="card-title"> 
+                  Name of Items: @item.Id  
+                 </a>
+              </h4>
+                
+              <strong>💰 @item.Price </strong>
+              <p class="card-text">More information about Items: @item.Description</p>
+              
+            </div>
+            <div class="card-footer" id="customize-card-footer">
+                <div class="btn-group">
+                  <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Action
+                  </button>
+                  <form class="dropdown-menu">
+                    
+                    <input type ="text" value="hihi" />
+                    <a class="dropdown-item" href="#">Another action</a>
+                    <a class="dropdown-item" href="#">Something else here</a>
+                    <button class="btn btn-primary dropdown-item ">df</button>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">Separated link</a>
+                  </form>
+                </div>
+
+            </div>
+      </div>
+    }
+    
+</div>
+
+<style>
+    #customize-list-card {
+        margin: auto;
+       
+        justify-content: center;
+        margin:auto;
+    }
+    #customize-sub-car{
+        width: 280px;
+        height: 400px;
+        margin: 10px;
+        justify-content: center;
+      
+      
+    }
+    #customize-image {
+        width:50px;
+        height:100px;
+        margin:auto;
+
+    }
+    #customize-card-footer {
+      
+    }
+</style>
