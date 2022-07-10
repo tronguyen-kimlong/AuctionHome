@@ -10,10 +10,33 @@ namespace AuctionHome.Repositories
     public class MyAuctioningService : IMyAuctioning
     {
         private readonly AuctionContext _context;
-        MyAuctioningService(AuctionContext auction)
+        public MyAuctioningService(AuctionContext auction)
         {
             _context = auction;
         }
+
+        public async Task<bool> addOrEdit(MyAuctioning myAuctioning)
+        {
+            try
+            {
+                if(myAuctioning != null)
+                {
+                    if(await getByID(myAuctioning.Id) != null)
+                    {
+                        // already exists, so update
+                        await update(myAuctioning);
+                        return true;
+                    } else
+                    {
+                        // not exists, so create;
+                        await create(myAuctioning);
+                        return true;
+                    }
+                }
+            } catch { return false; }
+            return false;
+        }
+
         public async Task<bool> create(MyAuctioning myAuctioning)
         {
            try
@@ -49,11 +72,11 @@ namespace AuctionHome.Repositories
             } catch { return null; }
         }
 
-        public async Task<MyAuctioning> getByID(string idItemAndUser)
+        public async Task<MyAuctioning> getByID(int id)
         {
             try
             {
-                return await _context.MyAuctionings.FindAsync(idItemAndUser);
+                return await _context.MyAuctionings.FindAsync(id);
                 
             } catch { return null; }
         }

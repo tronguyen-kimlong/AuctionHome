@@ -178,10 +178,19 @@ namespace AuctionHome.Data
 
             modelBuilder.Entity<MyAuctioning>(entity =>
             {
-                entity.HasKey(e => e.IdItemAndUsername)
-                    .HasName("PK__MyAuctio__554F6D7A7A487305");
-
                 entity.Property(e => e.IsAuctioning).HasDefaultValueSql("((1))");
+
+                entity.HasOne(d => d.IdItemNavigation)
+                    .WithMany(p => p.MyAuctionings)
+                    .HasForeignKey(d => d.IdItem)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__MyAuction__IdIte__251C81ED");
+
+                entity.HasOne(d => d.IdUserNavigation)
+                    .WithMany(p => p.MyAuctionings)
+                    .HasForeignKey(d => d.IdUser)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__MyAuction__IdUse__2610A626");
             });
 
             modelBuilder.Entity<Package>(entity =>

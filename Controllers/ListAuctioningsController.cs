@@ -54,7 +54,7 @@ namespace AuctionHome.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,UserArrayString")] ListAuctioning listAuctioning)
+        public async Task<IActionResult> Create([Bind("Id,UserArrayString,ArrayIdMyAuctioningString")] ListAuctioning listAuctioning)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +86,7 @@ namespace AuctionHome.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,UserArrayString")] ListAuctioning listAuctioning)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,UserArrayString,ArrayIdMyAuctioningString")] ListAuctioning listAuctioning)
         {
             if (id != listAuctioning.Id)
             {

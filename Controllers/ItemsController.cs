@@ -200,6 +200,7 @@ namespace AuctionHome.Controllers
 
         private string getUserClaim()
         {
+            
             foreach (var claim in User.Claims)
             {
                 var claimType = claim.Type;

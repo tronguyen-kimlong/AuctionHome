@@ -14,5 +14,6 @@ namespace AuctionHome.Models
         [Key]
         public int Id { get; set; }
         public string UserArrayString { get; set; }
+        public string ArrayIdMyAuctioningString { get; set; }
     }
 }

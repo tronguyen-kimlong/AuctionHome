@@ -16,6 +16,7 @@ namespace AuctionHome.Models
             AutoAuctions = new HashSet<AutoAuction>();
             FavouriteItems = new HashSet<FavouriteItem>();
             HistoryBuys = new HashSet<HistoryBuy>();
+            MyAuctionings = new HashSet<MyAuctioning>();
             PaidItems = new HashSet<PaidItem>();
             ReportAccounts = new HashSet<ReportAccount>();
         }
@@ -68,6 +69,8 @@ namespace AuctionHome.Models
         public virtual ICollection<FavouriteItem> FavouriteItems { get; set; }
         [InverseProperty(nameof(HistoryBuy.IdItemsNavigation))]
         public virtual ICollection<HistoryBuy> HistoryBuys { get; set; }
+        [InverseProperty(nameof(MyAuctioning.IdItemNavigation))]
+        public virtual ICollection<MyAuctioning> MyAuctionings { get; set; }
         [InverseProperty(nameof(PaidItem.IdItemsNavigation))]
         public virtual ICollection<PaidItem> PaidItems { get; set; }
         [InverseProperty(nameof(ReportAccount.IdItemsNavigation))]

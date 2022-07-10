@@ -22,11 +22,12 @@ namespace AuctionHome.Controllers
         // GET: MyAuctionings
         public async Task<IActionResult> Index()
         {
-            return View(await _context.MyAuctionings.ToListAsync());
+            var auctionContext = _context.MyAuctionings.Include(m => m.IdItemNavigation).Include(m => m.IdUserNavigation);
+            return View(await auctionContext.ToListAsync());
         }
 
         // GET: MyAuctionings/Details/5
-        public async Task<IActionResult> Details(string id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
@@ -34,7 +35,9 @@ namespace AuctionHome.Controllers
             }
 
             var myAuctioning = await _context.MyAuctionings
-                .FirstOrDefaultAsync(m => m.IdItemAndUsername == id);
+                .Include(m => m.IdItemNavigation)
+                .Include(m => m.IdUserNavigation)
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (myAuctioning == null)
             {
                 return NotFound();
@@ -46,6 +49,8 @@ namespace AuctionHome.Controllers
         // GET: MyAuctionings/Create
         public IActionResult Create()
         {
+            ViewData["IdItem"] = new SelectList(_context.Items, "Id", "IdUser");
+            ViewData["IdUser"] = new SelectList(_context.Users, "Username", "Username");
             return View();
         }
 
@@ -54,7 +59,7 @@ namespace AuctionHome.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdItemAndUsername,Cost,IsAuctioning")] MyAuctioning myAuctioning)
+        public async Task<IActionResult> Create([Bind("Id,IdItem,IdUser,Cost,IsAuctioning")] MyAuctioning myAuctioning)
         {
             if (ModelState.IsValid)
             {
@@ -62,11 +67,13 @@ namespace AuctionHome.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["IdItem"] = new SelectList(_context.Items, "Id", "IdUser", myAuctioning.IdItem);
+            ViewData["IdUser"] = new SelectList(_context.Users, "Username", "Username", myAuctioning.IdUser);
             return View(myAuctioning);
         }
 
         // GET: MyAuctionings/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
@@ -78,6 +85,8 @@ namespace AuctionHome.Controllers
             {
                 return NotFound();
             }
+            ViewData["IdItem"] = new SelectList(_context.Items, "Id", "IdUser", myAuctioning.IdItem);
+            ViewData["IdUser"] = new SelectList(_context.Users, "Username", "Username", myAuctioning.IdUser);
             return View(myAuctioning);
         }
 
@@ -86,9 +95,9 @@ namespace AuctionHome.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("IdItemAndUsername,Cost,IsAuctioning")] MyAuctioning myAuctioning)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,IdItem,IdUser,Cost,IsAuctioning")] MyAuctioning myAuctioning)
         {
-            if (id != myAuctioning.IdItemAndUsername)
+            if (id != myAuctioning.Id)
             {
                 return NotFound();
             }
@@ -102,7 +111,7 @@ namespace AuctionHome.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MyAuctioningExists(myAuctioning.IdItemAndUsername))
+                    if (!MyAuctioningExists(myAuctioning.Id))
                     {
                         return NotFound();
                     }
@@ -113,11 +122,13 @@ namespace AuctionHome.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["IdItem"] = new SelectList(_context.Items, "Id", "IdUser", myAuctioning.IdItem);
+            ViewData["IdUser"] = new SelectList(_context.Users, "Username", "Username", myAuctioning.IdUser);
             return View(myAuctioning);
         }
 
         // GET: MyAuctionings/Delete/5
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
@@ -125,7 +136,9 @@ namespace AuctionHome.Controllers
             }
 
             var myAuctioning = await _context.MyAuctionings
-                .FirstOrDefaultAsync(m => m.IdItemAndUsername == id);
+                .Include(m => m.IdItemNavigation)
+                .Include(m => m.IdUserNavigation)
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (myAuctioning == null)
             {
                 return NotFound();
@@ -137,7 +150,7 @@ namespace AuctionHome.Controllers
         // POST: MyAuctionings/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var myAuctioning = await _context.MyAuctionings.FindAsync(id);
             _context.MyAuctionings.Remove(myAuctioning);
@@ -145,9 +158,9 @@ namespace AuctionHome.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool MyAuctioningExists(string id)
+        private bool MyAuctioningExists(int id)
         {
-            return _context.MyAuctionings.Any(e => e.IdItemAndUsername == id);
+            return _context.MyAuctionings.Any(e => e.Id == id);
         }
     }
 }

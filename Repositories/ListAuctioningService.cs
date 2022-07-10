@@ -10,10 +10,35 @@ namespace AuctionHome.Repositories
     public class ListAuctioningService : IListAuctioning
     {
         private readonly AuctionContext _context;
-        ListAuctioningService(AuctionContext context)
+        public ListAuctioningService(AuctionContext context)
         {
             _context = context;
         }
+
+        public async Task<bool> addOrEdit(ListAuctioning listAuctioning)
+        {
+            try
+            {
+                if(listAuctioning != null)
+                {
+                    if(await getByID(listAuctioning.Id) != null)
+                    {
+                        // already exists, so update
+                        await update(listAuctioning);
+                        return true;
+                    }
+                    else
+                    {
+                        // not exists, so create;
+                        await create(listAuctioning);
+                        return true;
+                    }
+                }
+            }
+            catch { return false; }
+            return false;
+        }
+
         public async Task<bool> create(ListAuctioning listAuctioning)
         {
             try

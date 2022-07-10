@@ -18,6 +18,12 @@
             <th>
                 @Html.DisplayNameFor(model => model.IsAuctioning)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdItemNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdUserNavigation)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -31,9 +37,15 @@
                 @Html.DisplayFor(modelItem => item.IsAuctioning)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.IdItemAndUsername">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.IdItemAndUsername">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.IdItemAndUsername">Delete</a>
+                @Html.DisplayFor(modelItem => item.IdItemNavigation.IdUser)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdUserNavigation.Username)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
 }

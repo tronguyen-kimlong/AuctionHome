@@ -13,5 +13,6 @@ namespace AuctionHome.Interfaces
         Task<bool> delete(ListAuctioning listAuctioning);
         Task<bool> deleteAll();
         Task<bool> create(ListAuctioning listAuctioning);
+        Task<bool> addOrEdit(ListAuctioning listAuctioning);
     }
 }

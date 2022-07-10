@@ -12,10 +12,20 @@ namespace AuctionHome.Models
     public partial class MyAuctioning
     {
         [Key]
-        [StringLength(1000)]
-        public string IdItemAndUsername { get; set; }
+        public int Id { get; set; }
+        public int IdItem { get; set; }
+        [Required]
+        [StringLength(50)]
+        public string IdUser { get; set; }
         [Column(TypeName = "money")]
         public decimal Cost { get; set; }
         public bool? IsAuctioning { get; set; }
+
+        [ForeignKey(nameof(IdItem))]
+        [InverseProperty(nameof(Item.MyAuctionings))]
+        public virtual Item IdItemNavigation { get; set; }
+        [ForeignKey(nameof(IdUser))]
+        [InverseProperty(nameof(User.MyAuctionings))]
+        public virtual User IdUserNavigation { get; set; }
     }
 }

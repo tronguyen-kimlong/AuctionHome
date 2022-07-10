@@ -18,6 +18,7 @@ namespace AuctionHome.Models
             HistoryBuys = new HashSet<HistoryBuy>();
             HistorySearches = new HashSet<HistorySearch>();
             Items = new HashSet<Item>();
+            MyAuctionings = new HashSet<MyAuctioning>();
             PaidItems = new HashSet<PaidItem>();
             PaymentsAuctionIdUserBuyerNavigations = new HashSet<PaymentsAuction>();
             PaymentsAuctionIdUserSellerNavigations = new HashSet<PaymentsAuction>();
@@ -68,6 +69,8 @@ namespace AuctionHome.Models
         public virtual ICollection<HistorySearch> HistorySearches { get; set; }
         [InverseProperty(nameof(Item.IdUserNavigation))]
         public virtual ICollection<Item> Items { get; set; }
+        [InverseProperty(nameof(MyAuctioning.IdUserNavigation))]
+        public virtual ICollection<MyAuctioning> MyAuctionings { get; set; }
         [InverseProperty(nameof(PaidItem.IdUserNavigation))]
         public virtual ICollection<PaidItem> PaidItems { get; set; }
         [InverseProperty(nameof(PaymentsAuction.IdUserBuyerNavigation))]
