@@ -25,7 +25,7 @@ namespace AuctionHome.Repositories
            
         }
 
-        public async Task<PagingItem> GetPagingItem(int currentPage)
+        public async Task<PagingItem> GetPagingItem(int currentPage=0)
         {
 
            var _paginItem = new PagingItem();
@@ -42,10 +42,12 @@ namespace AuctionHome.Repositories
             {
                 // paging Items
                 _paginItem.Items = await _context.Items
+                    .Where(ii => ii.IsAccept == true)
+                    .Where(ii => ii.Auction2 >= DateTime.Now)
                     .Skip((currentPage - 1)*rowPerPage)
                     .Take(rowPerPage).ToListAsync();
                 _paginItem.PageIndex = currentPage;
-                double total = (double)_context.Items.Count()/rowPerPage;
+                double total = (double)_paginItem.Items.Count()/rowPerPage;
                 _paginItem.PageTotal = (int)Math.Ceiling(total); // round up
             }
             return _paginItem;
@@ -222,7 +224,7 @@ namespace AuctionHome.Repositories
                     costSecondsMax = costList[1];
                 }
                 decimal disCount = (decimal)(oldItem.Discount / 100 * oldItem.PriceAuction + 5);
-                oldItem.PriceAuction = costSecondsMax + disCount; // line to update Price Auction
+                oldItem.PriceAuction = costSecondsMax + disCount; // that is the line to update Price Auction
 
                 _context.Update(oldItem);
                 await _context.SaveChangesAsync();
