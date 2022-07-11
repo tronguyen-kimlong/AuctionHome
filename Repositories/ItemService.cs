@@ -1,5 +1,6 @@
 ﻿using AuctionHome.Data;
 using AuctionHome.Interfaces;
+using AuctionHome.Library;
 using AuctionHome.Models;
 using AuctionHome.Paging;
 using Microsoft.EntityFrameworkCore;
@@ -13,10 +14,15 @@ namespace AuctionHome.Repositories
     public class ItemService : IItem
     {
         private readonly AuctionContext _context;
+        private readonly IMyAuctioning myAuctioningInterface;
+        private readonly IListAuctioning listAuctioningInterface;
 
-        public ItemService(AuctionContext context)
+        public ItemService(AuctionContext context, IMyAuctioning myAuctioning, IListAuctioning listAuctioning)
         {
             _context = context;
+            myAuctioningInterface = myAuctioning;
+            listAuctioningInterface = listAuctioning;
+           
         }
 
         public async Task<PagingItem> GetPagingItem(int currentPage)
@@ -77,20 +83,6 @@ namespace AuctionHome.Repositories
             }catch { return false; }
         }
 
-       
-
-        //public List<Item> getAll()
-        //{
-        //    //var items = _context.Items.Where(i => i.IsAccept == false).ToList();
-        //    //var items = _context.Items.Include(i => i.IdCategoryNavigation).Include(i => i.IdUserNavigation).ToList();
-        //    var items = _context.Items.ToList();
-        //    return items;
-            
-        //}
-
-        
-
-        
         public Task<bool> deleteAll()
         {
             throw new System.NotImplementedException();
@@ -177,13 +169,7 @@ namespace AuctionHome.Repositories
             try
             {
                 DateTime dateTimeNow = DateTime.Now;           
-                //Console.WriteLine(item.Auction2);
-                //Console.WriteLine(dateTime);
-                //Console.WriteLine((item.Auction2 - dateTime).Value);
-                //Console.WriteLine((item.Auction2 - dateTime).Value.Days);
-                //Console.WriteLine((item.Auction2 - dateTime).Value.Hours);
-                //Console.WriteLine((item.Auction2 - dateTime).Value.Minutes);
-                //Console.WriteLine((item.Auction2 - dateTime).Value.Seconds); *@
+                
                 if (item.Auction2 != null)
                 {
                     TimeSpan dateDate = ((TimeSpan)(item.Auction2 - dateTimeNow));
@@ -200,6 +186,48 @@ namespace AuctionHome.Repositories
             }
             catch { return timetimeAuctionSeconds; }
             return timetimeAuctionSeconds;
+        }
+
+        public async Task<bool> updatePriceAuction(Item item, decimal priceAuction)
+        {
+            try
+            {
+                var oldItem = item;
+                // query where idItem = 6(example) that in myAuctioning DB;
+                var newListAuctioning = await listAuctioningInterface.getByID(item.Id);
+                string arrayIdMyAuctioningString = newListAuctioning.ArrayIdMyAuctioningString;
+                var arrayList = new ConvertStringAndList().stringToList(arrayIdMyAuctioningString);
+
+               
+                List<decimal> costList = new List<decimal>();
+                foreach(var id in arrayList)
+                {
+                    var newMyAuctioning = await myAuctioningInterface.getByID((int)long.Parse(id));
+                    decimal cost = (decimal)newMyAuctioning.Cost;
+                   
+                    costList.Add(cost);
+
+                }
+                // find seconds costMax;
+                costList.Sort(); // increasing;
+                costList.Reverse(); // decreasing;
+
+                decimal costSecondsMax = -999;
+                if(costList.Count == 1)
+                {
+                    costSecondsMax = costList[0];
+                }
+                else
+                {
+                    costSecondsMax = costList[1];
+                }
+                decimal disCount = (decimal)(oldItem.Discount / 100 * oldItem.PriceAuction + 5);
+                oldItem.PriceAuction = costSecondsMax + disCount; // line to update Price Auction
+
+                _context.Update(oldItem);
+                await _context.SaveChangesAsync();
+                return true;
+            } catch { return false; }
         }
     }
 }

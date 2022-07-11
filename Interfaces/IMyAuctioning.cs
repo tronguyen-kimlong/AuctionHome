@@ -10,9 +10,14 @@ namespace AuctionHome.Interfaces
         Task<List<MyAuctioning>> getAll();
 
         Task<bool> update(MyAuctioning myAuctioning);
+        Task<bool> updateCost(MyAuctioning myAuctioning, int cost);
         Task<bool> delete(MyAuctioning myAuctioning);
         Task<bool> deleteAll();
         Task<bool> create(MyAuctioning myAuctioning);
         Task<bool> addOrEdit(MyAuctioning myAuctioning);
+        Task<MyAuctioning> getByIdItemAndIdUser(int idItem, string idUser);
+
+        MyAuctioning new_IdItem_IdUser_Cost(int idItem, string idUser, int cost);
+        
     }
 }

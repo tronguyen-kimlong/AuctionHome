@@ -1,5 +1,7 @@
 ﻿@using AuctionHome.Library
-
+@{
+    
+}
 
 
 @model IEnumerable<AuctionHome.Models.Item>
@@ -66,7 +68,7 @@
                   <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Action
                   </button>
-                  <form class="dropdown-menu" asp-controller="HandleAuctioning" asp-action="AddOrEdit" >
+                  <form class="dropdown-menu" asp-controller="HandleAuctioning" asp-action="AddOrEdit" asp-route-idItem="@item.Id">
 
                     <p>You are not Auctioning</p>
 

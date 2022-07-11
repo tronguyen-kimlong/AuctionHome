@@ -18,6 +18,7 @@ namespace AuctionHome.Interfaces
         Task<bool> updateWithoutImage (Item item);
         Task<bool> isMyItem(string usernameClaim, int id);
         long getAuctionTime(Item item);
+        Task<bool> updatePriceAuction(Item item, decimal priceAuction);
        
     }
 }

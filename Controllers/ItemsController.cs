@@ -23,13 +23,15 @@ namespace AuctionHome.Controllers
         private readonly IItem itemInterface;
         private readonly ICategory categoryInterface;
         private readonly IUser userInterface;
+        private readonly IMyAuctioning myAuctioningInterface;
 
-        public ItemsController( IItem iItem, ICategory category, IUser user)
+        public ItemsController( IItem iItem, ICategory category, IUser user, IMyAuctioning myAuctioning)
         {
            
             itemInterface = iItem;
             categoryInterface = category;
             userInterface = user;
+            myAuctioningInterface = myAuctioning;
         }
 
         // GET: Items
@@ -42,11 +44,13 @@ namespace AuctionHome.Controllers
                 PageIndex = 0;  
             }
             var getItemAll = await itemInterface.GetPagingItem((int)PageIndex);
+            
             ViewBag.PageIndex = getItemAll.PageIndex;
             ViewBag.PageTotal = getItemAll.PageTotal;
             ViewBag.Controller = "Items";
             ViewBag.Action = "Index";
             ViewBag.Route = "PageIndex";
+            
             return View(getItemAll.Items);
             
         }

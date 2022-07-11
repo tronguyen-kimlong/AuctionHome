@@ -3,6 +3,7 @@ using AuctionHome.Interfaces;
 using AuctionHome.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AuctionHome.Repositories
@@ -13,6 +14,25 @@ namespace AuctionHome.Repositories
         public MyAuctioningService(AuctionContext auction)
         {
             _context = auction;
+        }
+
+
+
+        public async Task<MyAuctioning> getByIdItemAndIdUser(int idItem, string idUser)
+        {
+            try
+            {
+                if(idItem != 0 && idUser != null)
+                {
+                    var myAuctioning =  await _context.MyAuctionings
+                    .Where(kk => kk.IdItem == idItem)
+                    .Where(kk => kk.IdUser == idUser)
+                    .FirstOrDefaultAsync();
+
+                    return myAuctioning;
+                }
+            } catch { return null; }
+            return null;
         }
 
         public async Task<bool> addOrEdit(MyAuctioning myAuctioning)
@@ -68,7 +88,9 @@ namespace AuctionHome.Repositories
         {
             try
             {
+                
                 return await _context.MyAuctionings.ToListAsync();
+
             } catch { return null; }
         }
 
@@ -80,15 +102,47 @@ namespace AuctionHome.Repositories
                 
             } catch { return null; }
         }
-
         public async Task<bool> update(MyAuctioning myAuctioning)
         {
            try
             {
-                _context.MyAuctionings.Update(myAuctioning);
+                var oldMyAuc = await getByID(myAuctioning.Id);
+                oldMyAuc.IdItem = myAuctioning.IdItem;
+                oldMyAuc.IdUser = myAuctioning.IdUser;
+                oldMyAuc.Cost = myAuctioning.Cost;
+
+                _context.MyAuctionings.Update(oldMyAuc);
                 await _context.SaveChangesAsync();
                 return true;
             } catch { return false; }
         }
+        public async Task<bool> updateCost(MyAuctioning myAuctioning, int cost)
+        {
+            try
+            {
+                var oldMyAuc = await getByID(myAuctioning.Id);
+                oldMyAuc.Cost = cost;
+
+                _context.MyAuctionings.Update(oldMyAuc);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch { return false; }
+        }
+        public MyAuctioning new_IdItem_IdUser_Cost(int idItem, string idUser, int cost)
+        {
+            try
+            {
+                MyAuctioning newAuctioning = new MyAuctioning();
+                newAuctioning.IdItem = idItem;
+                newAuctioning.IdUser = idUser;
+                newAuctioning.Cost = cost;
+                return newAuctioning;
+
+            }
+            catch { return null; }
+        }
+
+       
     }
 }

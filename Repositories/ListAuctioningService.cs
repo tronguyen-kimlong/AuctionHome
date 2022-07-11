@@ -1,5 +1,6 @@
 ﻿using AuctionHome.Data;
 using AuctionHome.Interfaces;
+using AuctionHome.Library;
 using AuctionHome.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace AuctionHome.Repositories
             _context = context;
         }
 
-        public async Task<bool> addOrEdit(ListAuctioning listAuctioning)
+        public async Task<bool> addOrEdit(ListAuctioning listAuctioning, string idMyAuctioning)
         {
             try
             {
@@ -24,7 +25,7 @@ namespace AuctionHome.Repositories
                     if(await getByID(listAuctioning.Id) != null)
                     {
                         // already exists, so update
-                        await update(listAuctioning);
+                        await update(listAuctioning, idMyAuctioning);
                         return true;
                     }
                     else
@@ -82,11 +83,40 @@ namespace AuctionHome.Repositories
             } catch { return null; }
         }
 
-        public async Task<bool> update(ListAuctioning listAuctioning)
+        public ListAuctioning newByIdItemAndArrayIdMyAuctioning(int idItem, string arrayId)
         {
             try
             {
-                _context.ListAuctionings.Update(listAuctioning);
+                ListAuctioning newAuctioning = new ListAuctioning();
+                newAuctioning.Id = idItem;
+                newAuctioning.ArrayIdMyAuctioningString = arrayId;
+                return newAuctioning;
+            }
+            catch { return null; }
+
+        }
+
+        public async Task<bool> update(ListAuctioning listAuctioning, string idMyAuctioning)
+        {
+            try
+            {
+                
+                var oldList = await getByID(listAuctioning.Id);
+                //optimize the array Id Auctioning;
+                List<string> newList = new List<string>();
+                var stringAndList = new ConvertStringAndList();
+
+                newList =stringAndList.stringToList(oldList.ArrayIdMyAuctioningString);
+                // checking the id already exists yet;
+                if (stringAndList.checkingAlreadyExistsItem(newList, idMyAuctioning) == false)
+                {
+                    newList.Add(idMyAuctioning);
+                }
+                   
+               
+                oldList.ArrayIdMyAuctioningString = stringAndList.listToString(newList);
+
+                _context.ListAuctionings.Update(oldList);
                 await _context.SaveChangesAsync();
                 return true;
             } catch { return false; }

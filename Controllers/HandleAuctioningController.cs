@@ -26,29 +26,61 @@ namespace AuctionHome.Controllers
             , IMyAuctioning myAuctioning
             )
         {
-            itemInterface = item;
+            this.itemInterface = item;
             this.listAuctioningInterface = listAuctioning;
             this.myAuctioningInterface = myAuctioning;
         }
 
         [HttpPost]
-        public  async Task<IActionResult> AddOrEdit(int myMoney)
+        public  async Task<IActionResult> AddOrEdit(int idItem, int myMoney)
         {
             //int? idItem, int? myMoney
-            return Ok(myMoney);
-            //if(idItem > 0)
-            //{
-            //    string idItemAndUser = idItem + getUserClaim();
-            //    var item = await itemInterface.getByID(idItem); // not null
-            //    var listAuctioning = await listAuctioningInterface.getByID(idItem); // can null
-            //    var myAuctioning = await myAuctioningInterface.getByID(idItemAndUser); // can null
-            //    if(myMoney > item.PriceAuction)
-            //    {
-            //        // do something
-            //    }
-            //}
-            //return RedirectToAction("profile", "person");
-            
+            //return Ok(myMoney + getUserClaim()+ idItem);
+            if (idItem > 0)
+            {
+                
+                var item = await itemInterface.getByID(idItem); // not null
+               
+                
+
+                
+
+                // test
+                
+                
+                
+                
+                if (myMoney > item.PriceAuction)
+                {
+                    // the first, addoredit myautioning
+                    var tempMyauctioning = await myAuctioningInterface.getByIdItemAndIdUser(idItem, getUserClaim());
+                    if (tempMyauctioning != null)
+                    {
+                        // update
+                        await myAuctioningInterface.updateCost(tempMyauctioning, myMoney);
+                    }
+                    else
+                    {
+                        // create 
+                        var newMyAuctioning = myAuctioningInterface
+                        .new_IdItem_IdUser_Cost(idItem, getUserClaim(), myMoney); // create new object
+                        await myAuctioningInterface.create(newMyAuctioning);
+                    }
+
+                    // the seconds, addoredit listauctioning
+                    // get idMyAuctioning;
+                    tempMyauctioning = await myAuctioningInterface.getByIdItemAndIdUser(idItem, getUserClaim());
+                    int idMyAuctioning = tempMyauctioning.Id;
+                    var newListAuctioning = listAuctioningInterface
+                        .newByIdItemAndArrayIdMyAuctioning(idItem, idMyAuctioning + ""); // create new object;
+                    await listAuctioningInterface.addOrEdit(newListAuctioning,idMyAuctioning + "");
+                    // the third, update price_auction in the Items;
+                    var oldItem = await itemInterface.getByID(idItem);
+                    await itemInterface.updatePriceAuction(oldItem, (decimal)myMoney);
+                }
+            }
+            return RedirectToAction("Index", "Items");
+
         }
     }
 }
