@@ -35,7 +35,13 @@ namespace AuctionHome.Controllers
         }
 
         // GET: Items
-        public async Task<IActionResult> Index(int ? PageIndex)
+        public async Task<IActionResult> Index(int ? PageIndex,
+           
+            bool isAccept = true,
+            bool auction = false,
+            bool isSold = false,
+            bool isPaid = false
+            )
         {
 
             
@@ -43,7 +49,11 @@ namespace AuctionHome.Controllers
             {
                 PageIndex = 0;  
             }
-            var getItemAll = await itemInterface.GetPagingItem((int)PageIndex);
+            var getItemAll = await itemInterface.GetPagingItem((int)PageIndex, 
+                isAccept, 
+                auction, 
+                isSold, 
+                isPaid);
             
             ViewBag.PageIndex = getItemAll.PageIndex;
             ViewBag.PageTotal = getItemAll.PageTotal;
@@ -53,6 +63,23 @@ namespace AuctionHome.Controllers
             
             return View(getItemAll.Items);
             
+        }
+        public async Task<IActionResult> MyItems(int? PageIndex)
+        {
+            if (PageIndex == null || PageIndex <= 0)
+            {
+                PageIndex = 0;
+            }
+            string username = getUserClaim();
+            var getItemAll = await itemInterface.MyItems((int)PageIndex, username);
+
+            ViewBag.PageIndex = getItemAll.PageIndex;
+            ViewBag.PageTotal = getItemAll.PageTotal;
+            ViewBag.Controller = "Items";
+            ViewBag.Action = "Index";
+            ViewBag.Route = "PageIndex";
+
+            return View(getItemAll.Items);
         }
 
         // GET: Items/Details/5

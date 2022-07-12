@@ -25,30 +25,121 @@ namespace AuctionHome.Repositories
            
         }
 
-        public async Task<PagingItem> GetPagingItem(int currentPage=0)
+        public async Task<PagingItem> GetPagingItem(
+            int currentPage = 0,
+            bool isAccept = true,
+            bool auction = true,
+            bool isSold = false,
+            bool isPaid = false
+            )
+            
         {
 
            var _paginItem = new PagingItem();
-           int rowPerPage = 8;            
+           int rowPerPage = 20;            
            if(currentPage < 1)
             {
                 // get all
-                _paginItem.Items = await _context.Items.ToListAsync();
+                _paginItem.Items = await _context.Items
+                    .Where(ii => ii.IsAccept == isAccept)
+                    .Where(ii => ii.Auction2 >= DateTime.Now)
+                    .ToListAsync();
                 _paginItem.PageIndex = 0;
                 _paginItem.PageTotal = 0;
               
             }
             else
             {
-                // paging Items
+                // home Items
+                if(isAccept && auction)
+                {
+                    _paginItem.Items = await _context.Items
+                       .Where(ii => ii.IsAccept == isAccept)
+                       .Where(ii => ii.Auction2 >= DateTime.Now)
+                       .Skip((currentPage - 1) * rowPerPage)
+                       .Take(rowPerPage).ToListAsync();
+                    // do something
+                    _paginItem.PageIndex = currentPage;
+                    double total = (double)_paginItem.Items.Count() / rowPerPage;
+                    _paginItem.PageTotal = (int)Math.Ceiling(total); // round up
+                    // return
+                    return _paginItem;
+                }
+                if(isAccept)
+                {
+                    _paginItem.Items = await _context.Items
+                      .Where(ii => ii.IsAccept == isAccept)
+                      .Skip((currentPage - 1) * rowPerPage)
+                      .Take(rowPerPage).ToListAsync();
+                    // do something
+                    _paginItem.PageIndex = currentPage;
+                    double total = (double)_paginItem.Items.Count() / rowPerPage;
+                    _paginItem.PageTotal = (int)Math.Ceiling(total) + 1; // round up
+                    // return
+                    return _paginItem;
+                }
+               if(!isAccept)
+                {
+                    _paginItem.Items = await _context.Items
+                       .Where(ii => ii.IsAccept == isAccept)
+                       .Skip((currentPage - 1) * rowPerPage)
+                       .Take(rowPerPage).ToListAsync();
+                    // do something
+                    _paginItem.PageIndex = currentPage;
+                    double total = (double)_paginItem.Items.Count() / rowPerPage;
+                    _paginItem.PageTotal = (int)Math.Ceiling(total) + 1; // round up
+                    // return
+                    return _paginItem;
+                }
+               if(!auction)
+                {
+                    _paginItem.Items = await _context.Items
+                       .Where(ii => ii.IsAccept == isAccept)
+                       .Where(ii => ii.Auction2 < DateTime.Now)
+                       .Skip((currentPage - 1) * rowPerPage)
+                       .Take(rowPerPage).ToListAsync();
+                    // do something
+                    _paginItem.PageIndex = currentPage;
+                    double total = (double)_paginItem.Items.Count() / rowPerPage;
+                    _paginItem.PageTotal = (int)Math.Ceiling(total); // round up
+                    // return
+                    return _paginItem;
+                }
+               
+
+
+
+               
+            }
+
+            return _paginItem;
+        }
+        public async Task<PagingItem> MyItems(int currentPage, string username)
+        {
+            var _paginItem = new PagingItem();
+            int rowPerPage = 20;
+            if (currentPage < 1)
+            {
+                // get all
                 _paginItem.Items = await _context.Items
-                    .Where(ii => ii.IsAccept == true)
-                    .Where(ii => ii.Auction2 >= DateTime.Now)
-                    .Skip((currentPage - 1)*rowPerPage)
-                    .Take(rowPerPage).ToListAsync();
+                    .Where(ii => ii.IdUser == username)
+                    .ToListAsync();
+                _paginItem.PageIndex = 0;
+                _paginItem.PageTotal = 0;
+
+            }
+            else
+            {
+                _paginItem.Items = await _context.Items
+                      .Where(ii => ii.IdUser == username)
+                      .Skip((currentPage - 1) * rowPerPage)
+                      .Take(rowPerPage).ToListAsync();
+                // do something
                 _paginItem.PageIndex = currentPage;
-                double total = (double)_paginItem.Items.Count()/rowPerPage;
+                double total = (double)_paginItem.Items.Count() / rowPerPage;
                 _paginItem.PageTotal = (int)Math.Ceiling(total); // round up
+                                                                 // return
+                return _paginItem;
             }
             return _paginItem;
         }
@@ -231,5 +322,7 @@ namespace AuctionHome.Repositories
                 return true;
             } catch { return false; }
         }
+
+        
     }
 }

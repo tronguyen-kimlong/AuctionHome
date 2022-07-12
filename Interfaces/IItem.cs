@@ -9,7 +9,14 @@ namespace AuctionHome.Interfaces
     {
         Task<Item> getByID(int id);
         Task<Item> getByIDAsync(int id);
-        Task<PagingItem> GetPagingItem(int currentPage);
+        Task<PagingItem> GetPagingItem(
+            int currentPage = 0,
+            bool isAccept = true,
+            bool auction = true,
+            bool isSold = false,
+            bool isPaid = false
+            );
+        Task<PagingItem> MyItems(int currentPage, string username);
         Task<bool> update(Item item);
         Task<bool> delete(Item item);
         Task<bool> deleteAll();
