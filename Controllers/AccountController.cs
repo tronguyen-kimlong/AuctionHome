@@ -25,6 +25,7 @@ namespace AuctionHome.Controllers
         {
             ViewData["ReturnUrl"] = returnUrl;
             return View();
+           // return Ok(new HashPassword().EncryptString("harry"));
         }
 
         [HttpPost]

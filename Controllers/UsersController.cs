@@ -29,14 +29,14 @@ namespace AuctionHome.Controllers
         }
 
         // GET: Users/Details/5
-        public async Task<IActionResult> Details(string id)
+        public async Task<IActionResult> Profile(string username)
         {
-            if (id == null)
+            if (username == null)
             {
                 return NotFound();
             }
 
-            var user = await userInterface.getByUsername(id);
+            var user = await userInterface.getByUsername(username);
             if (user == null)
             {
                 return NotFound();

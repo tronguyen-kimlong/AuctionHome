@@ -1,9 +1,12 @@
 ﻿using AuctionHome.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+//using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 namespace AuctionHome.Controllers
 {
+    [Authorize]
     public class HandleAuctioningController : Controller
     {
         private readonly IItem itemInterface;
@@ -36,20 +39,11 @@ namespace AuctionHome.Controllers
         {
             //int? idItem, int? myMoney
             //return Ok(myMoney + getUserClaim()+ idItem);
-            if (idItem > 0)
+            if (idItem > 0 && getUserClaim() != null)
             {
                 
                 var item = await itemInterface.getByID(idItem); // not null
                
-                
-
-                
-
-                // test
-                
-                
-                
-                
                 if (myMoney > item.PriceAuction)
                 {
                     // the first, addoredit myautioning

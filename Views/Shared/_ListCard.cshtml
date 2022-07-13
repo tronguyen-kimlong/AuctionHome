@@ -1,15 +1,38 @@
 ﻿@using AuctionHome.Library
-
-
-
 @model IEnumerable<AuctionHome.Models.Item>
 @{
+    // authenticate Username;
+    string authUser = null;
+    
     string @disabled = "disabled";
-
+    foreach(var claim in User.Claims) 
+    { 
+        if(claim.Type=="username" )
+        {
+            authUser = claim.Value;
+            break;
+        }
+       
+    }
 }
+
+
 <div class=" d-flex align-content-center flex-wrap"  >
     @foreach(var item in Model)
     {
+        decimal myAucCost = 0;
+        string lightyellow = "";
+        string disabledMyAuc = "disabled"; 
+        foreach(var myAuctioning in item.MyAuctionings)
+        {
+            if(myAuctioning.IdItem == item.Id && myAuctioning.IdUser == authUser)
+            {
+                myAucCost = myAuctioning.Cost;
+                lightyellow = "lightyellow";
+                disabledMyAuc = "";
+            }
+        }
+         
         
         long getDateTimeToSeconds = new TimeToSeconds().getDateTiemToSeconds(item);
         
@@ -48,21 +71,29 @@
             var @countdownTimer = setInterval('@timerFC', 1000);
         </script>   
 
-        <div class="card" id="customize-sub-car"   > 
+        <div class="card" id="customize-sub-car" style="background-color:@lightyellow;"  > 
             <img class="card-img-top" src="@dataUrl" alt="Card image cap" id="customize-image">
            
             <div class="card-body">
               <span id="@elementCount" class="timer"></span>
               
               <h4>
-                  <a asp-action="Details" asp-route-id="@item.Id"   class="card-title"> 
-                  Name of Items: @item.Id  
+                  <a asp-action="Details" asp-route-id="@item.Id"  class="card-title"> 
+                    Name of Items: @item.Id  
                  </a>
               </h4>
                 
-              <strong>💰 @item.PriceAuction </strong>
-              <p class="card-text">More information about Items: @item.Description</p>
+              <strong>💰 @item.PriceAuction </strong> 
+              <br>
+              <strong > More information about Items:</strong>
+              <p class="inline-block text-truncate"  > @item.Description</p>
               
+                  
+                @if(myAucCost != 0)
+                {
+                    <p style="color:red">💰 @myAucCost</p>
+                }
+
             </div>
             <div class="card-footer" id="customize-card-footer">
                 <div class="btn-group">
@@ -70,18 +101,43 @@
                     Action
                   </button>
                   <form class="dropdown-menu" asp-controller="HandleAuctioning" asp-action="AddOrEdit" asp-route-idItem="@item.Id">
-
-                    <p>You are not Auctioning</p>
-
+                    @if(myAucCost != 0)
+                        {
+                            <p > My Money</p>
+                        }
+                    else
+                        {
+                             <p>You are not Auctioning</p>
+                        }
+                       
                     <div class="dropdown-divider"></div>
                     <input type ="number" placeholder="Enter your money" value="" name="myMoney" />
-                    <p>💰0</p>
+                    @if(myAucCost != 0)
+                        {
+                            <p style="color:red">💰 @myAucCost</p>
+                        }
+                    else
+                        {
+                             <p>💰0</p>
+                        }
+                       
 
                     <div class="dropdown-divider"></div>
                     <button class="btn btn-primary dropdown-item" type="submit">submit</button>
-                    <button class="btn btn-danger dropdown-item" type"" disabled>Cancel</button>
-                    
+
+                                       
                   </form>
+                  <!---->
+                   
+                  <form   asp-controller="HandleAuctioning" asp-action="AddOrEdit" asp-route-idItem="@item.Id">
+                        <button @if(item.Auction2 < DateTime.Now || item.Auction2 == null){@disabled;} 
+                        type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown1" aria-haspopup="true" aria-expanded="false">
+                        Action
+                      </button>
+                  </form>
+                 
+                       
+                  
                 </div>
 
             </div>
@@ -92,7 +148,7 @@
 
 <style>
     #customize-list-card {
-        margin: auto;
+       
        
         justify-content: center;
         margin:auto;
@@ -102,6 +158,7 @@
         height: 400px;
         margin: 10px;
         justify-content: center;
+       
       
       
     }

@@ -2,29 +2,91 @@
 @model AuctionHome.Models.Item
 
 @{
+    // authenticate Username;
+    string authUser = null;
+    foreach(var claim in User.Claims) 
+    { 
+        if(claim.Type=="username" && claim.Value == Model.IdUser)
+        {
+            authUser = claim.Value;
+        }
+       
+    }
+}
+
+@{
     ViewData["Title"] = "Details";
 }
  <partial name="_Paging" />
 <h1>Details</h1>
 
-<div>
-    <h4>Item</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImageItems)
-        </dt>
-        <dd class = "col-sm-10">
+
+
+<div class="row">
+    <div class="col-6 col-md-4">
+      
             @{
                 //@Html.DisplayFor(model => model.ImageItems)
                 string urlImage = new HandleFormImage().getUrlImage(Model.ImageItems);
             }
 
-            <img src="@urlImage" height="200" />
+            <img src="@urlImage" height="400" />
+        
+    </div>
+    <div class="col-12 col-md-8">
+        <dl class="row">
+        
+        
+        <dt class = "col-sm-2">
+            Id Category
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdCategoryNavigation.Id)
         </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IdCategoryNavigation.Name)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdCategoryNavigation.Name)
+        </dd>
+
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.PriceBuyNow)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.PriceBuyNow)
+        </dd>
+        
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.PriceAuction)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.PriceAuction)
+        </dd>
+        
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IdUserNavigation.Username)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdUserNavigation.Username)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IdUserNavigation.Phone)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdUserNavigation.Phone)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IdUserNavigation.Email)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.IdUserNavigation.Email)
+        </dd>
+
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Description)
         </dt>
+        
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Description)
         </dd>
@@ -34,80 +96,25 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Date)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsAccept)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsAccept)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsSold)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsSold)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsPaid)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsPaid)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Discount)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Discount)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PriceBuyNow)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PriceBuyNow)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Auction)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Auction2)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PriceAuction)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PriceAuction)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdCategoryNavigation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdCategoryNavigation.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdUserNavigation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdUserNavigation.Username)
-        </dd>
     </dl>
+      
+    </div>
 </div>
-<div>
-    @foreach(var claim in User.Claims) { 
-        if(claim.Type=="username" && claim.Value == Model.IdUser)
-        {
-            <a href="#" onclick="ajaxShow('@Url.Action("AddOrEdit","Items", new {id=Model.Id}, Context.Request.Scheme)', 'Update Items')" >Edit</a>
-   
-        }
-        else
-        {
-            <h1> You can only view</h1>
-        }
-        return; // stop now. because it running 2 times in Users Claim
+
+
+<div class="btn-group" role="group" aria-label="Basic example">
+
+
+  <a asp-controller="Users" asp-action="Profile" asp-route-username="@Model.IdUserNavigation.Username"
+  type="button" class="btn btn-primary">View Profile</a>
+    @if(authUser != null)
+    {
+         <button onclick="ajaxShow('@Url.Action("AddOrEdit","Items", new {id=Model.Id}, Context.Request.Scheme)', 'Update Items')" 
+         type="button" class="btn btn-danger">Edit</button>
+    } else
+    {
+        <button disabled type="button" class="btn btn-secondary">You can only view</button>
     }
-     
+
 </div>
+

@@ -41,6 +41,7 @@ namespace AuctionHome.Repositories
             {
                 // get all
                 _paginItem.Items = await _context.Items
+                    .Include(ii => ii.MyAuctionings)
                     .Where(ii => ii.IsAccept == isAccept)
                     .Where(ii => ii.Auction2 >= DateTime.Now)
                     .ToListAsync();
@@ -68,6 +69,7 @@ namespace AuctionHome.Repositories
                 if(isAccept)
                 {
                     _paginItem.Items = await _context.Items
+                      .Include(ii => ii.MyAuctionings)
                       .Where(ii => ii.IsAccept == isAccept)
                       .Skip((currentPage - 1) * rowPerPage)
                       .Take(rowPerPage).ToListAsync();
@@ -186,7 +188,10 @@ namespace AuctionHome.Repositories
         {
             try
             {
-                return await _context.Items.FindAsync(id);
+                return await _context.Items
+                    .Include(kk => kk.IdCategoryNavigation)
+                    .Include(kk => kk.IdUserNavigation)
+                    .FirstOrDefaultAsync(kk => kk.Id == id);
             }
             catch { return null; }
            

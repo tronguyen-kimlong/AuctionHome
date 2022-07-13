@@ -8,5 +8,6 @@ namespace AuctionHome.Paging
         public List<Item> Items { get; set; }
         public int PageIndex { get; set; }
         public int PageTotal { get; set; }
+        
     }
 }

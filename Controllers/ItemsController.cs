@@ -38,7 +38,7 @@ namespace AuctionHome.Controllers
         public async Task<IActionResult> Index(int ? PageIndex,
            
             bool isAccept = true,
-            bool auction = false,
+            bool auction = true,
             bool isSold = false,
             bool isPaid = false
             )
@@ -98,8 +98,10 @@ namespace AuctionHome.Controllers
                 return NotFound();
             }
 
-            Console.WriteLine(itemInterface.getAuctionTime(item));
+            
+            //return View(item);
             return View(item);
+
         }
 
         // get Items/AddOrEdit

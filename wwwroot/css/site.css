@@ -5,6 +5,12 @@ body {
     width:1200px; 
     margin:auto;
 }
+header {
+    width: 1200px;
+}
+footer {
+    width: 1500px;
+}
 
 
 
@@ -23,9 +29,9 @@ body {
 
 
 a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
 }
 
 /* Provide sufficient contrast against white background */

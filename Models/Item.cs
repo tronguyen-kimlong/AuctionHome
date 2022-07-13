@@ -55,6 +55,10 @@ namespace AuctionHome.Models
         [Column("auction2")]
         public DateTime? Auction2 { get; set; }
 
+        // add new 
+
+
+
         [ForeignKey(nameof(IdCategory))]
         [InverseProperty(nameof(Category.Items))]
         public virtual Category IdCategoryNavigation { get; set; }

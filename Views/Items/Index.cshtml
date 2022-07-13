@@ -12,10 +12,7 @@
 <a class="btn btn-success btn__add--book text-white"
            onclick="ajaxShow('@Url.Action("AddOrEdit","Items",null,Context.Request.Scheme)','New Items')">
             <i class="fas fa-plus">Add new</i>
-
 </a>
- <a href="#" onclick="ajaxShow('@Url.Action("AddOrEdit","Items", new {id=3}, Context.Request.Scheme)', 'Update Items')" >Edit</a>
-   
 
 
 <partial name="_ListCard" />
