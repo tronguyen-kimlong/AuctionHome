@@ -96,6 +96,32 @@ namespace AuctionHome.Repositories
 
         }
 
+        public async Task<bool> removeMyAuctioning(ListAuctioning listAuctioning, string idMyAuctioning)
+        {
+            try
+            {
+
+                var oldList = await getByID(listAuctioning.Id);
+                var stringAndList = new ConvertStringAndList();
+                List<string> newList = new List<string>();
+                if (oldList != null)
+                {
+                    newList = stringAndList.stringToList(oldList.ArrayIdMyAuctioningString);
+                    if(newList.Count > 0)
+                    {
+                        newList.Remove(idMyAuctioning);
+                    }
+                }
+               
+                oldList.ArrayIdMyAuctioningString = stringAndList.listToString(newList);
+
+                _context.ListAuctionings.Update(oldList);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch { return false; }
+        }
+
         public async Task<bool> update(ListAuctioning listAuctioning, string idMyAuctioning)
         {
             try

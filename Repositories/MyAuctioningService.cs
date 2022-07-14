@@ -144,6 +144,17 @@ namespace AuctionHome.Repositories
             catch { return null; }
         }
 
-       
+        public async Task<List<MyAuctioning>> getByUser(string username)
+        {
+            if (username == null) return null;
+            try
+            {
+                var newOject = await _context.MyAuctionings
+                    .Where(jj => jj.IdUser == username)
+                    .ToListAsync();
+                return newOject;
+            } catch { return null; }
+            
+        }
     }
 }

@@ -7,160 +7,82 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AuctionHome.Data;
 using AuctionHome.Models;
+using Microsoft.AspNetCore.Authorization;
+using AuctionHome.Interfaces;
+using AuctionHome.Library;
 
 namespace AuctionHome.Controllers
 {
+    [Authorize]
     public class MyAuctioningsController : Controller
     {
-        private readonly AuctionContext _context;
+        private readonly IMyAuctioning myAuctioningInterface;
+        private readonly IListAuctioning listAuctioningInterface;
+        private readonly IItem itemInterface;
 
-        public MyAuctioningsController(AuctionContext context)
+        public MyAuctioningsController(IMyAuctioning myAuctioning, IItem itemInterface, IListAuctioning listAuctioning)
         {
-            _context = context;
+            myAuctioningInterface = myAuctioning;
+            this.itemInterface = itemInterface;
+            this.listAuctioningInterface = listAuctioning;
         }
 
-        // GET: MyAuctionings
+        private string getUserClaim()
+        {
+
+            foreach (var claim in User.Claims)
+            {
+                var claimType = claim.Type;
+                if (claimType == "username") return claim.Value;
+
+            }
+            return null;
+        }
+
+       
         public async Task<IActionResult> Index()
         {
-            var auctionContext = _context.MyAuctionings.Include(m => m.IdItemNavigation).Include(m => m.IdUserNavigation);
-            return View(await auctionContext.ToListAsync());
+            
+            // get by username;
+            var newOject = await myAuctioningInterface.getByUser(getUserClaim());
+            return View(newOject);
         }
 
-        // GET: MyAuctionings/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var myAuctioning = await _context.MyAuctionings
-                .Include(m => m.IdItemNavigation)
-                .Include(m => m.IdUserNavigation)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (myAuctioning == null)
-            {
-                return NotFound();
-            }
-
-            return View(myAuctioning);
-        }
-
-        // GET: MyAuctionings/Create
-        public IActionResult Create()
-        {
-            ViewData["IdItem"] = new SelectList(_context.Items, "Id", "IdUser");
-            ViewData["IdUser"] = new SelectList(_context.Users, "Username", "Username");
-            return View();
-        }
-
-        // POST: MyAuctionings/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,IdItem,IdUser,Cost,IsAuctioning")] MyAuctioning myAuctioning)
+        public async Task<IActionResult> Delete(int idItem)
         {
-            if (ModelState.IsValid)
+            
+            string idUser = getUserClaim();
+            var oldOject = await myAuctioningInterface.getByIdItemAndIdUser(idItem, idUser);
+            var oldItem = await itemInterface.getByID(idItem);
+            long timeAuction = new TimeToSeconds().getDateTiemToSeconds(await itemInterface.getByID(idItem));
+            long _15minutes = 15 * 60;
+            if(oldOject != null)
             {
-                _context.Add(myAuctioning);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["IdItem"] = new SelectList(_context.Items, "Id", "IdUser", myAuctioning.IdItem);
-            ViewData["IdUser"] = new SelectList(_context.Users, "Username", "Username", myAuctioning.IdUser);
-            return View(myAuctioning);
-        }
-
-        // GET: MyAuctionings/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var myAuctioning = await _context.MyAuctionings.FindAsync(id);
-            if (myAuctioning == null)
-            {
-                return NotFound();
-            }
-            ViewData["IdItem"] = new SelectList(_context.Items, "Id", "IdUser", myAuctioning.IdItem);
-            ViewData["IdUser"] = new SelectList(_context.Users, "Username", "Username", myAuctioning.IdUser);
-            return View(myAuctioning);
-        }
-
-        // POST: MyAuctionings/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,IdItem,IdUser,Cost,IsAuctioning")] MyAuctioning myAuctioning)
-        {
-            if (id != myAuctioning.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+                if(timeAuction > _15minutes)
                 {
-                    _context.Update(myAuctioning);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!MyAuctioningExists(myAuctioning.Id))
+                    try
                     {
-                        return NotFound();
+
+                        
+                        // steps 1: remove ID MyAuctioning from array record ListAuctioning;
+                        var oldListAuctioning = await listAuctioningInterface.getByID(idItem);
+                        var oldMyAuctioning = await myAuctioningInterface.getByIdItemAndIdUser(idItem, getUserClaim());
+                        await listAuctioningInterface.removeMyAuctioning(oldListAuctioning, oldMyAuctioning.Id +"");
+                        // steps 2: delete row in DB MyAuctioning;
+                        await myAuctioningInterface.delete(oldOject);
+                        return RedirectToAction("Index", "Items");
+
                     }
-                    else
-                    {
-                        throw;
-                    }
+                    catch { return BadRequest(); }
                 }
-                return RedirectToAction(nameof(Index));
+                return Ok("You are not allow cancel this Auction. Because the time of Auction are limit 15 minutes left");
+
             }
-            ViewData["IdItem"] = new SelectList(_context.Items, "Id", "IdUser", myAuctioning.IdItem);
-            ViewData["IdUser"] = new SelectList(_context.Users, "Username", "Username", myAuctioning.IdUser);
-            return View(myAuctioning);
+            return Ok("The items is null");
+
         }
 
-        // GET: MyAuctionings/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var myAuctioning = await _context.MyAuctionings
-                .Include(m => m.IdItemNavigation)
-                .Include(m => m.IdUserNavigation)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (myAuctioning == null)
-            {
-                return NotFound();
-            }
-
-            return View(myAuctioning);
-        }
-
-        // POST: MyAuctionings/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var myAuctioning = await _context.MyAuctionings.FindAsync(id);
-            _context.MyAuctionings.Remove(myAuctioning);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool MyAuctioningExists(int id)
-        {
-            return _context.MyAuctionings.Any(e => e.Id == id);
-        }
+       
     }
 }

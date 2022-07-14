@@ -8,6 +8,7 @@ namespace AuctionHome.Interfaces
     {
         Task<MyAuctioning> getByID(int id);
         Task<List<MyAuctioning>> getAll();
+        Task<List<MyAuctioning>> getByUser(string username);
 
         Task<bool> update(MyAuctioning myAuctioning);
         Task<bool> updateCost(MyAuctioning myAuctioning, int cost);

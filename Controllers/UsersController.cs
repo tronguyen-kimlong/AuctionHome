@@ -56,13 +56,19 @@ namespace AuctionHome.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Username,Password,Gender,Phone,Email,Lockuser,Address,Description,PaypalSandbox,Wallet")] User user)
+        public async Task<IActionResult> Create( User user)
         {
-            if (ModelState.IsValid)
+            //[Bind("Username,Password,Gender,Phone,Email,Lockuser,Address,Description,PaypalSandbox,Wallet")]
+            //if (ModelState.IsValid)
+            //{
+               
+            //}
+            if(user != null)
             {
                 await userInterface.create(user);
                 return RedirectToAction(nameof(Index));
             }
+
             return View(user);
         }
 

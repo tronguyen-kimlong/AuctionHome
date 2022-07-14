@@ -128,16 +128,16 @@
                                        
                   </form>
                   <!---->
+                   @if(myAucCost != 0)
+                        {
+                        <form   asp-controller="MyAuctionings" asp-action="Delete" asp-route-idItem="@item.Id" onsubmit="return cancelAuction(this);" autocomplete="off">
+                            <button @if(item.Auction2 < DateTime.Now || item.Auction2 == null){@disabled;} 
+                            type="submit" class="btn btn-primary">
+                            Cancel
+                            </button>
+                        </form>
+                        }
                    
-                  <form   asp-controller="HandleAuctioning" asp-action="AddOrEdit" asp-route-idItem="@item.Id">
-                        <button @if(item.Auction2 < DateTime.Now || item.Auction2 == null){@disabled;} 
-                        type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown1" aria-haspopup="true" aria-expanded="false">
-                        Action
-                      </button>
-                  </form>
-                 
-                       
-                  
                 </div>
 
             </div>

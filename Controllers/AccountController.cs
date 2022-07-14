@@ -14,7 +14,7 @@ namespace AuctionHome.Controllers
     {
        
         private readonly IUser userInterface;
-        public AccountController( IUser user)
+        public AccountController(IUser user)
         {
            
             userInterface = user;
