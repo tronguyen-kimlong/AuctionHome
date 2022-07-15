@@ -313,7 +313,7 @@ namespace AuctionHome.Repositories
                 decimal costSecondsMax = -999;
                 if(costList.Count == 1)
                 {
-                    costSecondsMax = costList[0];
+                    costSecondsMax = oldItem.PriceAuction - oldItem.Discount / 100 * oldItem.PriceAuction - 5;
                 }
                 else
                 {
@@ -328,6 +328,17 @@ namespace AuctionHome.Repositories
             } catch { return false; }
         }
 
-        
+        public async Task<bool> updateTimeAuction(Item item, DateTime timeAuction)
+        {
+            try
+            {
+                var oldItem = await getByID(item.Id);
+                oldItem.Auction2 = timeAuction;
+                _context.Items.Update(oldItem);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch { return false; }
+        }
     }
 }

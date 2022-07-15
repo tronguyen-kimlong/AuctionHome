@@ -1,22 +1,25 @@
 ﻿@using AuctionHome.Library
 @model AuctionHome.Models.Item
-
+@{
+    ViewData["Title"] = "Details";
+    List<string> userList = ViewBag.UserList;
+}
 @{
     // authenticate Username;
     string authUser = null;
-    foreach(var claim in User.Claims) 
+    foreach(var claim in User.Claims)
     { 
         if(claim.Type=="username" && claim.Value == Model.IdUser)
         {
             authUser = claim.Value;
         }
-       
+
     }
+    long timeToSeconds = new TimeToSeconds().getDateTiemToSeconds(Model);
+    long _5hoursToSeconds = 5 * 60 * 60;
 }
 
-@{
-    ViewData["Title"] = "Details";
-}
+
  <partial name="_Paging" />
 <h1>Details</h1>
 
@@ -96,6 +99,64 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Date)
         </dd>
+        @{
+            long getDateTimeToSeconds = new TimeToSeconds().getDateTiemToSeconds(Model);
+           
+           
+            string elementCount = "countdown" + Model.Id;
+        
+            string timerFC = "timer" + Model.Id + "()";
+       
+            string countdownTimer = "countdownTimer" + Model.Id;
+            string seconds = "seconds" + Model.Id;
+            int id = Model.Id;
+                <script>
+                
+                    var @seconds = @getDateTimeToSeconds
+                
+                    function @timerFC {
+                        var days = Math.floor(@seconds / 24 / 60 / 60);
+                        var hoursLeft = Math.floor((@seconds) - (days * 86400));
+                        var hours = Math.floor(hoursLeft / 3600);
+                        var minutesLeft = Math.floor((hoursLeft) - (hours * 3600));
+                        var minutes = Math.floor(minutesLeft / 60);
+                        var remainingSeconds = @seconds % 60;
+                        function pad(n) {
+                            return (n < 10 ? "0" + n : n);
+                        }
+                        document.getElementById("@elementCount").innerHTML = pad(days) + ":" + pad(hours) + ":" + pad(minutes) + ":" + pad(remainingSeconds);
+                        if (@seconds <= 0) {
+                            clearInterval(@countdownTimer);
+                            document.getElementById("@elementCount").innerHTML = "Completed"; // completed to 0 timer
+                        } else {
+                            @seconds--;
+                        }
+                    }
+                    var @countdownTimer = setInterval('@timerFC', 1000);
+                </script>  
+                <dt  class="col-sm-2">
+                    Time Auction
+                </dt>
+                <dd class = "col-sm-10" style="color:red; font-size:18px" id="@elementCount">
+                  
+                </dd>
+        }
+        <!---->
+            @{
+                if(userList.Count > 0)
+                {
+                    <dt class="col-sm-2">
+                        List Users are Auctioning
+                    </dt>
+                    <dd class="col-sm-10">
+                        @foreach(var user in userList)
+                        {
+                           <a class="btn btn-primary" asp-controller="Users" asp-action="Profile" asp-route-username="@user" >@user</a>                         
+                        }                       
+                    </dd>
+                }
+            
+        }
     </dl>
       
     </div>
@@ -111,6 +172,13 @@
     {
          <button onclick="ajaxShow('@Url.Action("AddOrEdit","Items", new {id=Model.Id}, Context.Request.Scheme)', 'Update Items')" 
          type="button" class="btn btn-danger">Edit</button>
+        if(timeToSeconds > _5hoursToSeconds)
+        {
+            <form asp-controller="MyAuctionings" asp-action="CancelAuction" asp-route-idItem="@Model.Id">
+                 <button type="submit" class="btn btn-primary"> Cancel Auction</button>
+            </form>
+        }
+        
     } else
     {
         <button disabled type="button" class="btn btn-secondary">You can only view</button>

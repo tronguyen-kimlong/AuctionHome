@@ -4,11 +4,8 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>My Auctioning</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -18,16 +15,14 @@
             <th>
                 @Html.DisplayNameFor(model => model.Cost)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsAuctioning)
-            </th>
+            
             <th>
                 @Html.DisplayNameFor(model => model.IdItemNavigation)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.IdUserNavigation)
             </th>
-            <th></th>
+            
         </tr>
     </thead>
     <tbody>
@@ -39,20 +34,14 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Cost)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsAuctioning)
-            </td>
+           
             <td>
                 @Html.DisplayFor(modelItem => item.IdItem)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.IdUser)
             </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
+            
         </tr>
 }
     </tbody>

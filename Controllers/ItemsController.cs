@@ -24,14 +24,16 @@ namespace AuctionHome.Controllers
         private readonly ICategory categoryInterface;
         private readonly IUser userInterface;
         private readonly IMyAuctioning myAuctioningInterface;
+        private readonly IListAuctioning listAuctioningInterface;
 
-        public ItemsController( IItem iItem, ICategory category, IUser user, IMyAuctioning myAuctioning)
+        public ItemsController( IItem iItem, ICategory category, IUser user, IMyAuctioning myAuctioning, IListAuctioning listAuctioning)
         {
            
             itemInterface = iItem;
             categoryInterface = category;
             userInterface = user;
             myAuctioningInterface = myAuctioning;
+            listAuctioningInterface = listAuctioning;
         }
 
         // GET: Items
@@ -85,21 +87,44 @@ namespace AuctionHome.Controllers
         // GET: Items/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            
-            if (id == null)
+            int idItem = id;
+            if (idItem == null)
             {
                 return NotFound();
             }
 
             
-            var item = await itemInterface.getByID(id);
+            var item = await itemInterface.getByID(idItem);
             if (item == null)
             {
                 return NotFound();
             }
 
-            
-            //return View(item);
+            // get ListAuctioning;
+            // get MyAuctiong into foreach;
+            // get list username are auctioning;
+            // show the list
+
+            //steps 1;
+            var listAucCurrent = await listAuctioningInterface.getByID(idItem);// posible null;
+            var arrLAuc = new List<string>();
+            if (listAucCurrent != null)
+            {
+                arrLAuc = new ConvertStringAndList()
+                                .stringToList(listAucCurrent.ArrayIdMyAuctioningString);
+            }
+             
+            //steps 2;
+            List<string> arrayUsers = new List<string>();
+            foreach(var idMyAuc in arrLAuc)
+            {
+                var myAuctioning = await myAuctioningInterface.getByID(Int32.Parse(idMyAuc.ToString()));
+                // steps 3;
+                var getUsername = myAuctioning.IdUser;
+                // steps 4; save the users;
+                arrayUsers.Add(getUsername);
+            }
+            ViewBag.UserList = arrayUsers;
             return View(item);
 
         }

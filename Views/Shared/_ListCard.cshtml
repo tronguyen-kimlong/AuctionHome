@@ -23,20 +23,36 @@
         decimal myAucCost = 0;
         string lightyellow = "";
         string disabledMyAuc = "disabled"; 
+        // check my My Item
+        if(item.IdUser == authUser)
+        {
+            lightyellow = "lightyellow";
+        }
         foreach(var myAuctioning in item.MyAuctionings)
         {
             if(myAuctioning.IdItem == item.Id && myAuctioning.IdUser == authUser)
             {
                 myAucCost = myAuctioning.Cost;
-                lightyellow = "lightyellow";
+                lightyellow = "Coral";
                 disabledMyAuc = "";
             }
         }
-         
+        
+        if(item.IsAccept == false)
+        {
+            lightyellow = "silver";
+        }
+        if(item.IsSold)
+        {
+            lightyellow = "aqua";
+        }
+        if(item.IsPaid)
+        {
+            lightyellow = "lime";
+        }
+
         
         long getDateTimeToSeconds = new TimeToSeconds().getDateTiemToSeconds(item);
-        
-
         string dataUrl = null;
         dataUrl = new HandleFormImage().getUrlImage(item.ImageItems);
         string elementCount = "countdown" + item.Id;
@@ -83,9 +99,17 @@
                  </a>
               </h4>
                 
-              <strong>💰 @item.PriceAuction </strong> 
+              <strong>💰 Price Auction: @item.PriceAuction </strong> 
               <br>
+              @{
+                    if(item.PriceBuyNow > 0)
+                    {
+                        <strong>💰 Price Buy Now: @item.PriceBuyNow </strong> 
+                        <br>
+                    }
+                }
               <strong > More information about Items:</strong>
+                
               <p class="inline-block text-truncate"  > @item.Description</p>
               
                   
@@ -119,14 +143,19 @@
                     else
                         {
                              <p>💰0</p>
-                        }
-                       
-
+                        }                      
                     <div class="dropdown-divider"></div>
-                    <button class="btn btn-primary dropdown-item" type="submit">submit</button>
-
-                                       
+                    <button class="btn btn-primary dropdown-item" type = "submit">submit</button>                  
                   </form>
+                  @{
+                      if(item.PriceBuyNow > 0)
+                     {
+                        <form asp-controller="PaidItems" asp-action="BuyNow" asp-route-idItem="@item.Id">
+                            <button class="btn btn-success" type = "submit">Buy</button>     
+                        </form>
+                     }
+                  }
+                  
                   <!---->
                    @if(myAucCost != 0)
                         {

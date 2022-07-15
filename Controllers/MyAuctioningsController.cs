@@ -82,6 +82,47 @@ namespace AuctionHome.Controllers
             return Ok("The items is null");
 
         }
+        public async Task<IActionResult> CancelAuction(int idItem)
+        {
+            // steps 0: checking the time already > 5 hours;
+            // steps 0.1: declere string to list from listAuctioning;
+            // steps 1: delete my auctioning;
+            // steps 2: delete listAuctioning by Id that is the same id item
+            // steps 3: set Item.Auction2 <= previous date.
+            // ok. let do it. let's go;
+
+            // steps 0;
+            var itemCurrent = await itemInterface.getByID(idItem);
+            long _5hours = 5 * 60 * 60;
+            long timeOfAuction = new TimeToSeconds().getDateTiemToSeconds(itemCurrent);
+            if(timeOfAuction > _5hours)
+            {
+                // steps 0.1;
+                var listAuctioningCurrent = await listAuctioningInterface.getByID(idItem);
+                var arrLIdMyAuc = new List<string>();
+                if (listAuctioningCurrent != null)
+                {
+                    arrLIdMyAuc = new ConvertStringAndList()
+                    .stringToList(listAuctioningCurrent.ArrayIdMyAuctioningString);
+                }
+                // steps 1;
+                foreach(var eachMy in arrLIdMyAuc)
+                {
+                    var mimi = await myAuctioningInterface.getByID(Int32.Parse(eachMy));
+
+                    await myAuctioningInterface.delete(mimi);
+                    
+                }
+                // steps 2;
+                await listAuctioningInterface.delete(listAuctioningCurrent);
+                // steps 3:
+                await itemInterface.updateTimeAuction(itemCurrent, DateTime.Now);
+                return Ok("success");
+                
+            }
+            return Ok("Somethings wrong");
+
+        }
 
        
     }

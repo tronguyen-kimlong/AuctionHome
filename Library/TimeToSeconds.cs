@@ -7,7 +7,7 @@ namespace AuctionHome.Library
     {
         public long getDateTiemToSeconds(Item item)
         {
-            long timetimeAuctionSeconds = 0;
+            long timetimeAuctionSeconds = -1;
             try
             {
                 DateTime dateTimeNow = DateTime.Now;
@@ -18,7 +18,7 @@ namespace AuctionHome.Library
                 //Console.WriteLine((item.Auction2 - dateTime).Value.Hours);
                 //Console.WriteLine((item.Auction2 - dateTime).Value.Minutes);
                 //Console.WriteLine((item.Auction2 - dateTime).Value.Seconds); *@
-                if (item.Auction2 != null)
+                if (item.Auction2 != null && item.Auction2 >= dateTimeNow)
                 {
                     TimeSpan dateDate = ((TimeSpan)(item.Auction2 - dateTimeNow));
                     timetimeAuctionSeconds =
@@ -26,7 +26,6 @@ namespace AuctionHome.Library
                         + dateDate.Hours * 60*60
                         + dateDate.Minutes * 60
                         + dateDate.Seconds;
-
 
                     // timetimeAuctionSeconds = long.Parse(date.ToString("yyyyMMddHHmmss"));
                     return timetimeAuctionSeconds;

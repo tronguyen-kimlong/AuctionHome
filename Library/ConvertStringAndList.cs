@@ -4,27 +4,31 @@ namespace AuctionHome.Library
 {
     public class ConvertStringAndList
     {
-		public List<string> stringToList(string kk)
+		public List<string> stringToList(string kk) // are you cheching null;
 		{
 			var arrL = new List<string>();
 			string newst = "";
-			for (int i = 0; i < kk.Length; i++)
-			{
+			if(kk != null || kk != "")
+            {
+				for (int i = 0; i < kk.Length; i++)
+				{
 
-				if (kk[i] == ',')
-				{
-					arrL.Add(newst);
-					newst = "";
+					if (kk[i] == ',')
+					{
+						arrL.Add(newst);
+						newst = "";
+					}
+					else
+					{
+						newst += kk[i];
+					}
+					if (i == kk.Length - 1)
+					{
+						arrL.Add(newst);
+					}
 				}
-				else
-				{
-					newst += kk[i];
-				}
-				if (i == kk.Length - 1)
-				{
-					arrL.Add(newst);
-				}
-			}
+				
+            }
 			return arrL;
 		}
 

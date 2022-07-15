@@ -46,6 +46,7 @@ namespace AuctionHome
             services.AddScoped<IUser, UserService>();
             services.AddScoped<IListAuctioning, ListAuctioningService>();
             services.AddScoped<IMyAuctioning, MyAuctioningService>();
+            services.AddScoped<IPaidItems, PaidItemsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

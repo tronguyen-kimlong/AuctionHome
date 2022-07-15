@@ -22,7 +22,7 @@ ajaxPost = myForm => {
     console.log(myForm.action);
     const id = myForm.action.substring(myForm.action.lastIndexOf("=") + 1); // noted: by default it just the id. If u try to change it to different parementer. that is huge problem
     console.log(id);
-    alert(id + 'jaxpost');
+    //alert(id + 'jaxpost');
     try {
         $.ajax({
             type: "POST",

@@ -1,5 +1,6 @@
 ﻿using AuctionHome.Models;
 using AuctionHome.Paging;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -23,6 +24,7 @@ namespace AuctionHome.Interfaces
         Task<bool> create(Item item);
         Task<bool> updateDescription (Item item);
         Task<bool> updateWithoutImage (Item item);
+        Task<bool> updateTimeAuction(Item item, DateTime timeAuction); 
         Task<bool> isMyItem(string usernameClaim, int id);
         long getAuctionTime(Item item);
         Task<bool> updatePriceAuction(Item item, decimal priceAuction);
