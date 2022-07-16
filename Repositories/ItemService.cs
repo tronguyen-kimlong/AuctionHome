@@ -116,35 +116,7 @@ namespace AuctionHome.Repositories
 
             return _paginItem;
         }
-        public async Task<PagingItem> MyItems(int currentPage, string username)
-        {
-            var _paginItem = new PagingItem();
-            int rowPerPage = 20;
-            if (currentPage < 1)
-            {
-                // get all
-                _paginItem.Items = await _context.Items
-                    .Where(ii => ii.IdUser == username)
-                    .ToListAsync();
-                _paginItem.PageIndex = 0;
-                _paginItem.PageTotal = 0;
-
-            }
-            else
-            {
-                _paginItem.Items = await _context.Items
-                      .Where(ii => ii.IdUser == username)
-                      .Skip((currentPage - 1) * rowPerPage)
-                      .Take(rowPerPage).ToListAsync();
-                // do something
-                _paginItem.PageIndex = currentPage;
-                double total = (double)_paginItem.Items.Count() / rowPerPage;
-                _paginItem.PageTotal = (int)Math.Ceiling(total); // round up
-                                                                 // return
-                return _paginItem;
-            }
-            return _paginItem;
-        }
+        
         public async Task<bool> create(Item item)
         {
             try
@@ -337,6 +309,142 @@ namespace AuctionHome.Repositories
                 _context.Items.Update(oldItem);
                 await _context.SaveChangesAsync();
                 return true;
+            }
+            catch { return false; }
+        }
+        public async Task<PagingItem> MyItems(int currentPage, string username)
+        {
+            var _paginItem = new PagingItem();
+            int rowPerPage = 20;
+            if (currentPage < 1)
+            {
+                // get all
+                _paginItem.Items = await _context.Items
+                    .Where(ii => ii.IdUser == username)
+                    .ToListAsync();
+                _paginItem.PageIndex = 0;
+                _paginItem.PageTotal = 0;
+
+            }
+            else
+            {
+                _paginItem.Items = await _context.Items
+                      .Where(ii => ii.IdUser == username)
+                      .Skip((currentPage - 1) * rowPerPage)
+                      .Take(rowPerPage).ToListAsync();
+                // do something
+                _paginItem.PageIndex = currentPage;
+                double total = (double)_paginItem.Items.Count() / rowPerPage;
+                _paginItem.PageTotal = (int)Math.Ceiling(total); // round up
+                                                                 // return
+                return _paginItem;
+            }
+            return _paginItem;
+        }
+        public async Task<PagingItem> MyItemsIsAccept(int currentPage, string username, bool isAccept) // not accepted
+        {
+          try
+            {
+               var totalItems = await MyItems(currentPage, username);
+               totalItems.Items = totalItems.Items
+                    .Where(ii=> ii.IsAccept == isAccept)
+                    .Where(ii=> ii.IsSold == false)
+                    .Where(ii=> ii.IsPaid == false)
+                    .ToList();
+                return totalItems;
+            } catch { return null; }
+           
+        }
+
+        public async Task<PagingItem> MyItemsIsSold(int currentPage, string username, bool isSold)
+        {
+            try
+            {
+                var totalItems = await MyItems(currentPage, username);
+                totalItems.Items = totalItems.Items.Where(ii => ii.IsSold == isSold).ToList();
+                return totalItems;
+            }
+            catch { return null; }
+        }
+
+        public async Task<PagingItem> MyItemsIsPaid(int currentPage, string username, bool isPaid)
+        {
+            try
+            {
+                var totalItems = await MyItems(currentPage, username);
+                totalItems.Items = totalItems.Items.Where(ii => ii.IsPaid == true).ToList();
+                return totalItems;
+            }
+            catch { return null; }
+        }
+
+        public async Task<PagingItem> MyItemsIsAuction(int currentPage, string username, bool isAccept)
+        {
+            try
+            {
+                var totalItems = await MyItems(currentPage, username);
+                totalItems.Items = totalItems.Items.Where(ii => ii.IsAccept == isAccept)
+                    .Where(ii => ii.Auction2 > DateTime.Now)
+                    .ToList();
+                return totalItems;
+            }
+            catch { return null; }
+        }
+
+        public async Task<PagingItem> MyItemsReadyAuction(int currentPage, string username, bool accepted)
+        {
+            try
+            {
+                var totalItems = await MyItems(currentPage, username);
+                totalItems.Items = totalItems.Items
+                    .Where(ii => ii.IsAccept == accepted)
+                    .Where(ii => ii.Auction2 <= DateTime.Now)
+                    .ToList();
+                return totalItems;
+            }
+            catch { return null; }
+        }
+
+        public async Task<bool> setAccept(Item item)
+        {
+            try
+            {
+                var oldItem = await getByID(item.Id);
+                oldItem.IsAccept = true;
+                _context.Update(oldItem);
+                await _context.SaveChangesAsync();
+                return true;
+
+            } catch { return false; }
+        }
+
+        public async Task<bool> setSold(Item item)
+        {
+            try
+            {
+                var oldItem = await getByID(item.Id);
+                oldItem.IsAccept = false;
+                oldItem.IsSold = true;
+                _context.Update(oldItem);
+                await _context.SaveChangesAsync();
+                return true;
+
+            }
+            catch { return false; }
+        }
+
+        public async Task<bool> setPaid(Item item)
+        {
+            try
+            {
+                var oldItem = await getByID(item.Id);
+                oldItem.IsAccept = false;
+                oldItem.IsSold = false;
+                oldItem.IsPaid = true;
+                _context.Update(oldItem);
+                await _context.SaveChangesAsync();
+                return true;
+
             }
             catch { return false; }
         }

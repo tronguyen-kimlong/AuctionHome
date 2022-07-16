@@ -8,14 +8,35 @@
 
 
 
-<h1>Index</h1>
+
 <a class="btn btn-success btn__add--book text-white"
            onclick="ajaxShow('@Url.Action("AddOrEdit","Items",null,Context.Request.Scheme)','New Items')">
-            <i class="fas fa-plus">Add new</i>
-
+            <i class="fas fa-plus" id="customize-add-item">Add new</i>
 </a>
- <a href="#" onclick="ajaxShow('@Url.Action("AddOrEdit","Items", new {id=3}, Context.Request.Scheme)', 'Update Items')" >Edit</a>
-   
+
+
+<div class="btn-group" role="group" aria-label="Basic example">
+   <form asp-controller="Items" asp-action="MyItems" asp-route-id="1" >
+       <button type="submit" class="btn btn-danger">All</button>
+   </form>
+   <form asp-controller="Items" asp-action="NotAccept" asp-route-id="1">
+       <button type="submit" class="btn btn-secondary" id="customize-status-notAccept">Not Accept</button>
+   </form>
+   <form asp-controller="Items" asp-action="Sold" asp-route-id="1">
+       <button type="submit" class="btn btn-secondary" id="customize-status-isSold">Sold</button>
+   </form>
+  
+   <form asp-controller="Items" asp-action="Paid" asp-route-id="1">
+       <button type="submit" class="btn btn-secondary" id="customize-status-IsPaid">Paid</button>
+   </form>
+   <form asp-controller="Items" asp-action="ReadyAuction" asp-route-id="1">
+       <button type="submit" class="btn btn-secondary" id="customize-status-accepted">Ready Auction</button>
+   </form>
+  <form asp-controller="Items" asp-action="Auction" asp-route-id="1">
+       <button type="submit" class="btn btn-secondary" id="customize-status-auction">Auctioning</button>
+   </form>
+  
+</div>  
 
 
 <partial name="_ListCard" />
@@ -23,5 +44,37 @@
 
 
 
+<style>
+    #customize-add-item{
+        padding:10px;
+        margin-bottom:10px;
+    }
+    #customize-status-notAccept{
+        background-color:silver;
+        font-weight:bold;
+        color:black;
+    }
+    #customize-status-isSold{
+        background-color:aqua;
+        font-weight:bold;
+        color:black;
+    }
+    #customize-status-IsPaid{
+        background-color:lime;
+        font-weight:bold;
+        color:black;
+    }
+     #customize-status-accepted{
+        background-color:lightyellow;
+        font-weight:bold;
+        color:black;
+    }
+     #customize-status-auction{
+        background-color:gold;
+        font-weight:bold;
+        color:black;
+    }
 
+
+</style>
 

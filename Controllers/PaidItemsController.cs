@@ -44,6 +44,7 @@ namespace AuctionHome.Controllers
             // price buy now >0
             // cancel auction (set time auction to date now)
             // create PaidItem
+            // update Item is sold
             
             // steps 1;
             var oldItem = await itemInterface.getByIDAsync(idItem);
@@ -53,7 +54,7 @@ namespace AuctionHome.Controllers
                 if(oldItem.PriceBuyNow>0)
                 {
                     // steps 3:
-                    // steps 0.1;
+                    // steps 00.1;
                     var listAuctioningCurrent = await listAuctioningInterface.getByID(idItem);
                     var arrLIdMyAuc = new List<string>();
                     if (listAuctioningCurrent != null)
@@ -61,17 +62,16 @@ namespace AuctionHome.Controllers
                         arrLIdMyAuc = new ConvertStringAndList()
                         .stringToList(listAuctioningCurrent.ArrayIdMyAuctioningString);
                     }
-                    // steps .1;
+                    // steps 0.1;
                     foreach (var eachMy in arrLIdMyAuc)
                     {
                         var mimi = await myAuctioningInterface.getByID(Int32.Parse(eachMy));
 
                         await myAuctioningInterface.delete(mimi);
-
                     }
-                    // steps .2;
+                    // steps 0.2;
                     await listAuctioningInterface.delete(listAuctioningCurrent);
-                    // steps .3:
+                    // steps 0.3:
                     await itemInterface.updateTimeAuction(oldItem, DateTime.Now);
 
                     // steps 4;
@@ -80,7 +80,9 @@ namespace AuctionHome.Controllers
                     paidItem.IdUser = getUserClaim();
                     paidItem.Coust = oldItem.PriceBuyNow;
                     await paidItemsInterface.update(paidItem);
-                    return Ok("success");
+                    // steps 5;
+                    await itemInterface.setSold(oldItem);
+                    return RedirectToAction("Sold", "Items");
                 }
             }
             return Ok("something wrong");

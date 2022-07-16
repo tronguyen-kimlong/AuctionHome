@@ -18,6 +18,11 @@ namespace AuctionHome.Interfaces
             bool isPaid = false
             );
         Task<PagingItem> MyItems(int currentPage, string username);
+        Task<PagingItem> MyItemsIsAccept(int currentPage, string username, bool isAccept);
+        Task<PagingItem> MyItemsIsSold(int currentPage, string username, bool isSold);
+        Task<PagingItem> MyItemsIsPaid(int currentPage, string username, bool isPaid);
+        Task<PagingItem> MyItemsIsAuction(int currentPage, string username, bool isSold);
+        Task<PagingItem> MyItemsReadyAuction(int currentPage, string username, bool accepted);
         Task<bool> update(Item item);
         Task<bool> delete(Item item);
         Task<bool> deleteAll();
@@ -28,6 +33,10 @@ namespace AuctionHome.Interfaces
         Task<bool> isMyItem(string usernameClaim, int id);
         long getAuctionTime(Item item);
         Task<bool> updatePriceAuction(Item item, decimal priceAuction);
+        Task<bool> setAccept(Item item);
+        Task<bool> setSold(Item item);
+        Task<bool> setPaid(Item item);
+
        
     }
 }

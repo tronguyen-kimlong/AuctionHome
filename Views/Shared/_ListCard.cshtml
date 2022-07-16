@@ -28,6 +28,15 @@
         {
             lightyellow = "lightyellow";
         }
+        
+        if(item.IdUser == authUser)
+        {
+            if(item.IsAccept == true && new TimeToSeconds().getDateTiemToSeconds(item) > 0)
+            {
+                lightyellow = "gold";
+            }
+        }
+
         foreach(var myAuctioning in item.MyAuctionings)
         {
             if(myAuctioning.IdItem == item.Id && myAuctioning.IdUser == authUser)
@@ -115,7 +124,7 @@
                   
                 @if(myAucCost != 0)
                 {
-                    <p style="color:red">💰 @myAucCost</p>
+                    <p style="color:white; font-weight:bold; font-size:30px" class="animate-flicker">💰 @myAucCost</p>
                 }
 
             </div>
@@ -159,7 +168,7 @@
                   <!---->
                    @if(myAucCost != 0)
                         {
-                        <form   asp-controller="MyAuctionings" asp-action="Delete" asp-route-idItem="@item.Id" onsubmit="return cancelAuction(this);" autocomplete="off">
+                        <form asp-controller="MyAuctionings" asp-action="Delete" asp-route-idItem="@item.Id" onsubmit="return cancelAuction(this);" autocomplete="off">
                             <button @if(item.Auction2 < DateTime.Now || item.Auction2 == null){@disabled;} 
                             type="submit" class="btn btn-primary">
                             Cancel
@@ -200,4 +209,6 @@
     #customize-card-footer {
       
     }
+
+
 </style>

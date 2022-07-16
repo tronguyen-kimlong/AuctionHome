@@ -66,6 +66,9 @@ namespace AuctionHome.Controllers
             return View(getItemAll.Items);
             
         }
+       
+         
+        [Authorize]
         public async Task<IActionResult> MyItems(int? PageIndex)
         {
             if (PageIndex == null || PageIndex <= 0)
@@ -81,7 +84,97 @@ namespace AuctionHome.Controllers
             ViewBag.Action = "Index";
             ViewBag.Route = "PageIndex";
 
-            return View(getItemAll.Items);
+            return View("MyItems",getItemAll.Items);
+        }
+        [Authorize]
+        public async Task<IActionResult> NotAccept(int? PageIndex)
+        {
+            if (PageIndex == null || PageIndex <= 0)
+            {
+                PageIndex = 0;
+            }
+            string username = getUserClaim();
+            var getItemAll = await itemInterface.MyItemsIsAccept((int)PageIndex, username, false);
+
+            ViewBag.PageIndex = getItemAll.PageIndex;
+            ViewBag.PageTotal = getItemAll.PageTotal;
+            ViewBag.Controller = "Items";
+            ViewBag.Action = "Index";
+            ViewBag.Route = "PageIndex";
+
+            return View("MyItems", getItemAll.Items);
+        }
+        [Authorize]
+        public async Task<IActionResult> Sold(int? PageIndex)
+        {
+            if (PageIndex == null || PageIndex <= 0)
+            {
+                PageIndex = 0;
+            }
+            string username = getUserClaim();
+            var getItemAll = await itemInterface.MyItemsIsSold((int)PageIndex, username, true);
+
+            ViewBag.PageIndex = getItemAll.PageIndex;
+            ViewBag.PageTotal = getItemAll.PageTotal;
+            ViewBag.Controller = "Items";
+            ViewBag.Action = "Index";
+            ViewBag.Route = "PageIndex";
+
+            return View("MyItems", getItemAll.Items);
+        }
+        [Authorize]
+        public async Task<IActionResult> Paid(int? PageIndex)
+        {
+            if (PageIndex == null || PageIndex <= 0)
+            {
+                PageIndex = 0;
+            }
+            string username = getUserClaim();
+            var getItemAll = await itemInterface.MyItemsIsPaid((int)PageIndex, username, true);
+
+            ViewBag.PageIndex = getItemAll.PageIndex;
+            ViewBag.PageTotal = getItemAll.PageTotal;
+            ViewBag.Controller = "Items";
+            ViewBag.Action = "Index";
+            ViewBag.Route = "PageIndex";
+
+            return View("MyItems", getItemAll.Items);
+        }
+        [Authorize]
+        public async Task<IActionResult> ReadyAuction(int? PageIndex)
+        {
+            if (PageIndex == null || PageIndex <= 0)
+            {
+                PageIndex = 0;
+            }
+            string username = getUserClaim();
+            var getItemAll = await itemInterface.MyItemsReadyAuction((int)PageIndex, username, true);
+
+            ViewBag.PageIndex = getItemAll.PageIndex;
+            ViewBag.PageTotal = getItemAll.PageTotal;
+            ViewBag.Controller = "Items";
+            ViewBag.Action = "Index";
+            ViewBag.Route = "PageIndex";
+
+            return View("MyItems", getItemAll.Items);
+        }
+        [Authorize]
+        public async Task<IActionResult> Auction(int? PageIndex)
+        {
+            if (PageIndex == null || PageIndex <= 0)
+            {
+                PageIndex = 0;
+            }
+            string username = getUserClaim();
+            var getItemAll = await itemInterface.MyItemsIsAuction((int)PageIndex, username, true);
+
+            ViewBag.PageIndex = getItemAll.PageIndex;
+            ViewBag.PageTotal = getItemAll.PageTotal;
+            ViewBag.Controller = "Items";
+            ViewBag.Action = "Index";
+            ViewBag.Route = "PageIndex";
+
+            return View("MyItems", getItemAll.Items);
         }
 
         // GET: Items/Details/5
