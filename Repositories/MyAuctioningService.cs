@@ -2,6 +2,7 @@
 using AuctionHome.Interfaces;
 using AuctionHome.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 //using System.Linq;
@@ -12,9 +13,11 @@ namespace AuctionHome.Repositories
     public class MyAuctioningService : IMyAuctioning
     {
         private readonly AuctionContext _context;
-        public MyAuctioningService(AuctionContext auction)
+       
+        public MyAuctioningService(AuctionContext auction )
         {
             _context = auction;
+         
         }
 
 
@@ -156,5 +159,64 @@ namespace AuctionHome.Repositories
             } catch { return null; }
             
         }
+
+        //public async Task<List<MyAuctioning>> successAuction(string username)
+        //{ 
+        //    // return list Myauction, it get by username;
+        //    // check myauctioning by get iditem and username, return bool
+           
+        //    // checking time auction of Item >= datetime.now and price of MyAuction bigger the price of Items, return list Myauction.
+        //    //
+        //    var myAuctionings = await getByUsername(username);
+        //    var newAuctionings = new List<MyAuctioning>();
+        //    if(myAuctionings != null)
+        //    {
+        //        foreach(var auction in myAuctionings)
+        //        {
+        //            //int idItem = auction.IdItem;
+        //            if( await checkingPriceItem_andCostMy(auction.IdItem, auction.Id) == true
+        //                && await checkingTimeAuctionItem_andTimeNow(auction.IdItem) == true) 
+        //            {
+        //                newAuctionings.Add(auction);
+        //            } 
+        //        }
+
+        //    }
+        //    return newAuctionings;
+        //}
+
+        //public async Task<List<MyAuctioning>> getByUsername(string username)
+        //{
+        //    try
+        //    {
+        //        var myAuction = await _context.MyAuctionings
+        //            .Where(ii => ii.IdUser == username)
+        //            .ToListAsync();
+        //        return myAuction;
+        //    } catch { return null; }
+        //}
+        //public async Task<bool> checkingTimeAuctionItem_andTimeNow(int idItem)
+        //{
+        //    var item = await itemInterface.getByID(idItem);
+        //    if(item != null)
+        //        if(item.Auction2 < DateTime.Now)
+        //        {
+        //            return true;
+        //        }
+        //    return false;
+        //}
+        //public async Task<bool> checkingPriceItem_andCostMy(int idItem, int idMy)
+        //{
+        //    var item = await itemInterface.getByID(idItem);
+        //    var myAuc = await getByID(idMy);
+        //    if(item != null && myAuc != null)
+        //    {
+        //        if(myAuc.Cost >= item.PriceAuction)
+        //        {
+        //            return true;
+        //        }
+        //    }
+        //    return false;
+        //}
     }
 }

@@ -19,6 +19,12 @@ namespace AuctionHome.Interfaces
         Task<MyAuctioning> getByIdItemAndIdUser(int idItem, string idUser);
 
         MyAuctioning new_IdItem_IdUser_Cost(int idItem, string idUser, int cost);
-        
+
+        //Task<List<MyAuctioning>> successAuction(string username);
+        //Task<List<MyAuctioning>> getByUsername(string username);
+        //Task<bool> checkingTimeAuctionItem_andTimeNow(int idItem);
+        //Task<bool> checkingPriceItem_andCostMy(int idItem, int idMy);
+
+
     }
 }

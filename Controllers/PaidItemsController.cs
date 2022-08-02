@@ -9,9 +9,11 @@ using AuctionHome.Data;
 using AuctionHome.Models;
 using AuctionHome.Interfaces;
 using AuctionHome.Library;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AuctionHome.Controllers
 {
+    [Authorize]
     public class PaidItemsController : Controller
     {
         private readonly IPaidItems paidItemsInterface;
@@ -82,11 +84,17 @@ namespace AuctionHome.Controllers
                     await paidItemsInterface.update(paidItem);
                     // steps 5;
                     await itemInterface.setSold(oldItem);
-                    return RedirectToAction("Sold", "Items");
+                    return RedirectToAction("Index", "PaidItems");
                 }
             }
             return Ok("something wrong");
           
+        }
+        public async Task<IActionResult> Index()
+        {
+            // get item by username;
+            var arrList =  await paidItemsInterface.getByUsername(getUserClaim());
+            return View(arrList);
         }
 
     }

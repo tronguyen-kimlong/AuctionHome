@@ -14,13 +14,12 @@ namespace AuctionHome.Repositories
         public UserService(AuctionContext context) { _context = context; }
         public async Task<bool> create(User user)
         {
-            try
-            {
+            
                 user.Password = new HashPassword().EncryptString(user.Password); // encrypt pass word string;
                 _context.Users.Add(user); // save the user to the database;
                 await _context.SaveChangesAsync();
                 return true;
-            } catch { return false; }
+            
 
         }
 

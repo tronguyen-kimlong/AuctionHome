@@ -124,6 +124,14 @@ namespace AuctionHome.Controllers
 
         }
 
-       
+        public async Task<IActionResult> SuccessAuction()
+        {
+            // check myauctioning by get iditem and username, return bool
+            // return list Myauction, it get by username;
+            // checking time auction of Item >= datetime.now and price of MyAuction bigger the price of Items, return list Myauction.
+            // 
+            // return View("Index", await myAuctioningInterface.successAuction(getUserClaim()));
+            return View("index");
+        }
     }
 }

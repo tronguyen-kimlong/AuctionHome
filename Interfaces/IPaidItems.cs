@@ -7,6 +7,7 @@ namespace AuctionHome.Interfaces
     public interface IPaidItems
     {
         Task<PaidItem> getByID(int id);
+        Task<List<PaidItem>> getByUsername(string username);
         Task<List<PaidItem>> getAll();
 
         Task<bool> update(PaidItem paidItem);

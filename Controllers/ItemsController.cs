@@ -185,8 +185,7 @@ namespace AuctionHome.Controllers
             {
                 return NotFound();
             }
-
-            
+           
             var item = await itemInterface.getByID(idItem);
             if (item == null)
             {
@@ -209,15 +208,29 @@ namespace AuctionHome.Controllers
              
             //steps 2;
             List<string> arrayUsers = new List<string>();
+            List<decimal> arryCost = new List<decimal>();
+            List<MyAuctioning> myAuctionings = new List<MyAuctioning>();
             foreach(var idMyAuc in arrLAuc)
             {
                 var myAuctioning = await myAuctioningInterface.getByID(Int32.Parse(idMyAuc.ToString()));
+                if(myAuctioning != null)
+                {
+                    myAuctionings.Add(myAuctioning);
+                }
                 // steps 3;
                 var getUsername = myAuctioning.IdUser;
+                var getCost = myAuctioning.Cost;
                 // steps 4; save the users;
                 arrayUsers.Add(getUsername);
+                arryCost.Add(getCost);
+                
             }
+            // steps 5;
+            arryCost.Sort();
+            arryCost.Reverse();
+            ViewBag.CostList = arryCost;
             ViewBag.UserList = arrayUsers;
+            ViewBag.MyAuctionings = myAuctionings;
             return View(item);
 
         }

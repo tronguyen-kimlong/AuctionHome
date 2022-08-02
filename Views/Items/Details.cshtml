@@ -3,6 +3,16 @@
 @{
     ViewData["Title"] = "Details";
     List<string> userList = ViewBag.UserList;
+    List<decimal> costList = ViewBag.CostList;
+    List<MyAuctioning> myAuctionings = ViewBag.MyAuctionings;
+    decimal maxmax = -99;
+    foreach(var mimi in myAuctionings)
+    {
+        if(mimi.Cost >= maxmax)
+        {
+            maxmax = mimi.Cost;
+        }
+    }
 }
 @{
     // authenticate Username;
@@ -63,7 +73,7 @@
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.PriceAuction)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class = "col-sm-10" style="color:red; font-size:18px; font-weight: bold">
             @Html.DisplayFor(model => model.PriceAuction)
         </dd>
         
@@ -110,53 +120,70 @@
             string countdownTimer = "countdownTimer" + Model.Id;
             string seconds = "seconds" + Model.Id;
             int id = Model.Id;
-                <script>
-                
-                    var @seconds = @getDateTimeToSeconds
-                
-                    function @timerFC {
-                        var days = Math.floor(@seconds / 24 / 60 / 60);
-                        var hoursLeft = Math.floor((@seconds) - (days * 86400));
-                        var hours = Math.floor(hoursLeft / 3600);
-                        var minutesLeft = Math.floor((hoursLeft) - (hours * 3600));
-                        var minutes = Math.floor(minutesLeft / 60);
-                        var remainingSeconds = @seconds % 60;
-                        function pad(n) {
-                            return (n < 10 ? "0" + n : n);
-                        }
-                        document.getElementById("@elementCount").innerHTML = pad(days) + ":" + pad(hours) + ":" + pad(minutes) + ":" + pad(remainingSeconds);
-                        if (@seconds <= 0) {
-                            clearInterval(@countdownTimer);
-                            document.getElementById("@elementCount").innerHTML = "Completed"; // completed to 0 timer
-                        } else {
-                            @seconds--;
-                        }
-                    }
-                    var @countdownTimer = setInterval('@timerFC', 1000);
-                </script>  
-                <dt  class="col-sm-2">
-                    Time Auction
-                </dt>
-                <dd class = "col-sm-10" style="color:red; font-size:18px" id="@elementCount">
-                  
-                </dd>
+                        <script>
+                        
+                            var @seconds = @getDateTimeToSeconds
+                        
+                            function @timerFC {
+                                var days = Math.floor(@seconds / 24 / 60 / 60);
+                                var hoursLeft = Math.floor((@seconds) - (days * 86400));
+                                var hours = Math.floor(hoursLeft / 3600);
+                                var minutesLeft = Math.floor((hoursLeft) - (hours * 3600));
+                                var minutes = Math.floor(minutesLeft / 60);
+                                var remainingSeconds = @seconds % 60;
+                                function pad(n) {
+                                    return (n < 10 ? "0" + n : n);
+                                }
+                                document.getElementById("@elementCount").innerHTML = pad(days) + ":" + pad(hours) + ":" + pad(minutes) + ":" + pad(remainingSeconds);
+                                if (@seconds <= 0) {
+                                    clearInterval(@countdownTimer);
+                                    document.getElementById("@elementCount").innerHTML = "Completed"; // completed to 0 timer
+                                } else {
+                                    @seconds--;
+                                }
+                            }
+                            var @countdownTimer = setInterval('@timerFC', 1000);
+                        </script>  
+                        <dt  class="col-sm-2">
+                            Time Auction
+                        </dt>
+                        <dd class = "col-sm-10" style="color:red; font-size:18px" id="@elementCount">
+                          
+                        </dd>
         }
         <!---->
             @{
-                if(userList.Count > 0)
+                //if(userList.Count > 0)
+                //{
+                //    <dt class="col-sm-2">
+                //        List Users are Auctioning
+                //    </dt>
+                //    <dd class="col-sm-10">
+                //        @foreach(var user in userList)
+                //        {
+                //           <a class="btn btn-primary" asp-controller="Users" asp-action="Profile" asp-route-username="@user" >@user</a>                         
+                //        }                       
+                //    </dd>
+                //}
+                if(myAuctionings.Count > 0)
                 {
-                    <dt class="col-sm-2">
-                        List Users are Auctioning
-                    </dt>
-                    <dd class="col-sm-10">
-                        @foreach(var user in userList)
+                    
+                            <dt class="col-sm-2">
+                                List Users are Auctioning
+                            </dt>
+                            <dd class="col-sm-10">
+                                @foreach(var mymy in myAuctionings)
                         {
-                           <a class="btn btn-primary" asp-controller="Users" asp-action="Profile" asp-route-username="@user" >@user</a>                         
+                            string dangerClass = "primary";
+                            if(maxmax == mymy.Cost)
+                            {
+                                dangerClass = "danger";
+                            }
+                                    <a class="btn btn-@dangerClass" asp-controller="Users" asp-action="Profile" asp-route-username="@mymy.IdUser" >@mymy.IdUser (@mymy.Cost) </a>                         
                         }                       
-                    </dd>
+                            </dd>
                 }
-            
-        }
+            }
     </dl>
       
     </div>
@@ -178,7 +205,18 @@
                  <button type="submit" class="btn btn-primary"> Cancel Auction</button>
             </form>
         }
-        
+        if(timeToSeconds < 0)
+        {
+           @* <form asp-controller="MyAuctionings" asp-action="hi" asp-route-idItem="@Model.Id">
+                 <button type="submit" class="btn btn-primary"> Pick Time Auction </button>
+            </form>*@
+          
+                 @*<button 
+                     onclick="ajaxShow('@Url.Action("AddOrEdit","Items",null,Context.Request.Scheme)','New Items')"
+                     type="button" class="btn btn-primary"> Pick Time Auction </button>
+                 *@
+        }
+
     } else
     {
         <button disabled type="button" class="btn btn-secondary">You can only view</button>

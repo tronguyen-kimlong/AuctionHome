@@ -3,6 +3,7 @@ using AuctionHome.Interfaces;
 using AuctionHome.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 namespace AuctionHome.Repositories
 {
@@ -49,6 +50,19 @@ namespace AuctionHome.Repositories
             {
                 PaidItem result = await _context.PaidItems.FindAsync(id);
                 return result;
+            } catch { return null; }
+        }
+
+        public async Task<List<PaidItem>> getByUsername(string username)
+        {
+            try
+            {
+                var itemiii = await _context.PaidItems
+                    .Where(ii => ii.IdUser == username)
+                    .Include(ii => ii.IdItemsNavigation)
+                    .ThenInclude(ii => ii.IdCategoryNavigation)
+                    .ToListAsync();
+                return itemiii;
             } catch { return null; }
         }
 

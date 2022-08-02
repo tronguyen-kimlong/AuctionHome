@@ -2,6 +2,9 @@
 
 @{
     ViewData["Title"] = "Details";
+
+
+ 
 }
 
 <h1>Details User</h1>
@@ -60,5 +63,17 @@
         </dd>
     </dl>
     <hr />
+    @{
+        if(ViewBag.editUser == true)
+        {
+            <a class="btn btn-primary" asp-action="Edit" > Edit</a>
+        }
+        else
+        {
+            <button class="btn btn-secondary">You can only view</button>
+        }
+    }
+    
 </div>
+
 

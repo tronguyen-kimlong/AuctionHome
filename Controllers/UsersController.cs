@@ -21,7 +21,17 @@ namespace AuctionHome.Controllers
         {
             userInterface = user;
         }
+        private string getUserClaim()
+        {
 
+            foreach (var claim in User.Claims)
+            {
+                var claimType = claim.Type;
+                if (claimType == "username") return claim.Value;
+
+            }
+            return null;
+        }
         // GET: Users
         public async Task<IActionResult> Index()
         {
@@ -41,11 +51,16 @@ namespace AuctionHome.Controllers
             {
                 return NotFound();
             }
+            if(username == getUserClaim())
+            {
+                ViewBag.editUser = true;
+            }
 
             return View(user);
         }
 
         // GET: Users/Create
+        [AllowAnonymous]
         public IActionResult Create()
         {
             return View();
@@ -54,6 +69,7 @@ namespace AuctionHome.Controllers
         // POST: Users/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [AllowAnonymous]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create( User user)
@@ -65,22 +81,24 @@ namespace AuctionHome.Controllers
             //}
             if(user != null)
             {
+                user.Wallet = 0;
                 await userInterface.create(user);
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(user);
+            return RedirectToAction("Login", "Account",user);
         }
 
         // GET: Users/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit()
         {
-            if (id == null)
+            string idUser = getUserClaim();
+            if (idUser == null)
             {
                 return NotFound();
             }
 
-            var user = await userInterface.getByUsername(id.Trim());
+            var user = await userInterface.getByUsername(idUser.Trim());
             if (user == null)
             {
                 return NotFound();
@@ -93,10 +111,10 @@ namespace AuctionHome.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id,  User user)
+        public async Task<IActionResult> Edit( User user)
         {
-            //[Bind("Username,Password,Gender,Phone,Email,Lockuser,Address,Description,PaypalSandbox,Wallet")]
-            if (id != user.Username)
+            string userId = getUserClaim();
+            if (userId != user.Username)
             {
                 return NotFound();
             }

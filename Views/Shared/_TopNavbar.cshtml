@@ -55,9 +55,9 @@
               Collections  
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item"  asp-controller="ListAuctionings" asp-action="index">Bought</a>  
-              <a class="dropdown-item"  asp-controller="MyAuctionings" asp-action="index">Paid</a>
-              <a class="dropdown-item"  asp-controller="MyAuctionings" asp-action="index">Successful Auction</a>
+              <a class="dropdown-item"  asp-controller="PaidItems" asp-action="index">Bought</a>  
+             
+              <a class="dropdown-item"  asp-controller="MyAuctionings" asp-action="SuccessAuction">Successful Auction</a>
               <a class="dropdown-item"  asp-controller="MyAuctionings" asp-action="index">My Auctioning</a>            
             </div>
        </li>
@@ -66,7 +66,7 @@
         @*<a class="nav-link bi-person-square" href="#"> Profile <span class="sr-only">(current)</span></a>*@
         <!-- bi-person-square customize-profile -->
         <div class="btn-group">
-          <button type="button" class="nav-link customize-profile bi-person-square " data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <button type="button" class="nav-link customize-profile bi-person-square" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Profile @username
           </button>
           <div class="dropdown-menu dropdown-menu-right">
@@ -78,8 +78,10 @@
               {
                    <a  asp-controller="Account" asp-action="login" asp-route-ReturnUrl="/Items" class="dropdown-item" type="button">Log in</a>
               }       
-            <button class="dropdown-item" type="button">Register</button>
-            <button class="dropdown-item" type="button">My Profile</button>
+            
+            <a asp-controller="Users" asp-action="Create" class="dropdown-item" type="button">Register</a>
+            <a asp-controller="Users" asp-action="Profile" asp-route-username="@username" class="dropdown-item" type="button">My Profile</a>
+            <a asp-controller="Users" asp-action="Edit" asp-route-username="@username" class="dropdown-item" type="button">Edit Profile</a>
           </div>
         </div>
       </li>
